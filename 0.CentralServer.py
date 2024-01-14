@@ -16,7 +16,7 @@ class MyServer(BaseHTTPRequestHandler):
 def run_server(server_class=HTTPServer, handler_class=MyServer, port=1050):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    print("서버가 시작되었습니다.")
+    print("Central Server Wait for HOST")
     httpd.serve_forever()
 
 
