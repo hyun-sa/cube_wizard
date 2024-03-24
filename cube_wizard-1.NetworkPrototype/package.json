@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "blockly": "^10.3.0",
+    "npm": "^10.3.0"
+  },
+  "name": "cube_wizard-1.networkprototype",
+  "description": "No-code blockcoding",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "react-scripts start"
+  },
+  "author": "",
+  "license": "ISC"
+}
