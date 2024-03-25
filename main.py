@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget
-from PyQt5.QtCore import pyqtSlot, QEvent
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget, QLabel, QMenu
+from PyQt5.QtCore import pyqtSlot, QEvent, Qt
 import multiprocessing, time, os ,shutil, requests, sys
 
 
@@ -124,9 +124,6 @@ class HostListDialog(QDialog):
         self.setWindowTitle("Host List")
         
         self.hosts = []
-        with open('./data/hosts.txt') as f:
-            for line in f.readlines():
-                self.hosts.append(line[:-1])
         self.displayed_hosts = [] 
         
         self.layout = QVBoxLayout()
@@ -148,7 +145,35 @@ class HostListDialog(QDialog):
         self.host_list = QListWidget(self)
         self.host_list.itemDoubleClicked.connect(self.hostDoubleClicked) 
         self.layout.addWidget(self.host_list)
+        self.host_list.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.host_list.customContextMenuRequested.connect(self.show_context_menu) 
         self.refresh_host_list()
+        
+        
+    def show_context_menu(self, position):
+        context_menu = QMenu(self)
+        delete_action = context_menu.addAction("삭제")
+        action = context_menu.exec_(self.host_list.mapToGlobal(position))
+        if action == delete_action:
+            self.confirm_delete()
+        
+        
+    def confirm_delete(self):
+        reply = QMessageBox.question(self, '삭제 확인', '정말로 삭제하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.delete_selected_host()
+            
+            
+    def delete_selected_host(self):
+        selected_item = self.host_list.currentItem()
+        if selected_item:
+            selected_host = selected_item.text()
+            del_idx = self.displayed_hosts.index(selected_host)
+            del self.displayed_hosts[del_idx]
+            with open(hosts_file, "w") as fw:
+                for i in self.displayed_hosts:
+                    fw.write(f"{i}\n")
+            self.refresh_host_list()
         
         
     def create_buttons(self):
@@ -174,6 +199,14 @@ class HostListDialog(QDialog):
         
     def refresh_host_list(self):
         self.host_list.clear()
+        self.hosts = []
+        with open(hosts_file) as f:
+            for line in f.readlines():
+                if line[0] == "*":
+                    self.hosts.append(line[2:line.rfind('*')])
+                else:
+                    self.hosts.append(line[:-1])
+                    
         for host in self.hosts:
             self.host_list.addItem(host)
         self.displayed_hosts = self.hosts[:]
@@ -188,7 +221,9 @@ class HostListDialog(QDialog):
             
             
     def add_host(self):
-        print("호스트 추가")
+        add_dialog = AddHostDialog()
+        if add_dialog.exec_() == QDialog.Accepted:
+            self.refresh_host_list()
         
         
     def new_host(self):
@@ -199,6 +234,74 @@ class HostListDialog(QDialog):
         print(f"Selected host: {item.text()}")
         self.close()
         
+        
+class AddHostDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("호스트 추가")
+        
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        
+        self.create_form_fields()
+        self.create_buttons()
+        
+    def create_form_fields(self):
+        self.host_name_label = QLabel("호스트 이름 : ")
+        self.host_name_input = QLineEdit(self)
+        self.layout.addWidget(self.host_name_label)
+        self.layout.addWidget(self.host_name_input)
+        
+        self.host_password_label = QLabel("호스트 비밀번호(필요시) : ")
+        self.host_password_input = QLineEdit(self)
+        self.host_password_input.setEchoMode(QLineEdit.Password)
+        self.layout.addWidget(self.host_password_label)
+        self.layout.addWidget(self.host_password_input)
+        
+        self.host_address_label = QLabel("호스트 주소 : ")
+        self.host_address_input = QLineEdit(self)
+        self.layout.addWidget(self.host_address_label)
+        self.layout.addWidget(self.host_address_input)
+        
+    def create_buttons(self):
+        self.buttons_layout = QHBoxLayout()
+        
+        self.confirm_button = QPushButton("확인", self)
+        self.confirm_button.clicked.connect(self.confirm)
+        self.buttons_layout.addWidget(self.confirm_button)
+        
+        self.cancel_button = QPushButton("취소", self)
+        self.cancel_button.clicked.connect(self.reject)
+        self.buttons_layout.addWidget(self.cancel_button)
+        
+        self.layout.addLayout(self.buttons_layout)
+        
+    def confirm(self):
+        global find_server_idx
+        host_name = self.host_name_input.text()
+        host_password = self.host_password_input.text()
+        host_address = self.host_address_input.text()
+        
+        if host_address.find(':') == -1:
+            host_address += ":15001"
+        
+        if host_password:
+            host_text = f"* {host_name} : {host_address} * {host_password}\n"
+        else:
+            host_text = f"{host_name} : {host_address}\n"
+        
+        with open(hosts_file, "r") as fw:
+            temp_hosts = fw.readlines()
+            temp_hosts.append(host_text)
+        
+        with open(hosts_file, "w") as fw:
+            for i in temp_hosts:
+                fw.write(i)
+        QMessageBox.information(self, "등록 완료", "등록되었습니다")
+        
+        self.accept()
+
+
 
 def sending_files():
     print("전송")
@@ -212,6 +315,7 @@ def sending_files():
 
 if __name__ == "__main__":
     save_temp = "./data/temp"
+    hosts_file = './data/localhosts.txt'
     network_process = multiprocessing.Process(target=sending_files)
     app = QtWidgets.QApplication([])
     window = MainWindow()
