@@ -2,6 +2,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget, QLabel, QMenu, QCheckBox, QDialogButtonBox
 from PyQt5.QtCore import pyqtSlot, QEvent, Qt
 import multiprocessing, time, os ,shutil, requests, sys
+from WebSocket import FileAdaptor
+import threading
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -13,7 +15,12 @@ class MainWindow(QtWidgets.QMainWindow):
   
         local_url = QtCore.QUrl.fromLocalFile(file_path)
         print(file_path)
+
+        # local_file 활용
         self.browser.setUrl(local_url)
+        # Node.js 활용
+        # self.browser.setUrl(QtCore.QUrl("http://localhost:8080/"))
+
         self.setCentralWidget(self.browser)
 
         navtb = QtWidgets.QToolBar("Navigation")
@@ -68,7 +75,13 @@ class MainWindow(QtWidgets.QMainWindow):
             shutil.copy2(save_temp, file_path)
         else:
             print("파일 선택 취소")
-            
+
+    # # file_save legacy
+    # def file_save(self):
+    #     print("파일 저장")
+    #     fileAdapter = FileAdaptor.get_instance()
+    #     file = fileAdapter.getdata()
+    #     fileAdapter.save_as_file(file, "test")
     
     def file_load(self):
         dialog = QtWidgets.QFileDialog.getOpenFileName(None, "파일 불러오기", "", "cw 파일 (*.cw)")
@@ -81,6 +94,12 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print("파일 선택 취소")
             
+
+    # # file_load legacy
+    # def file_load(self):
+    #     print("파일 불러오기")
+    #     fileAdapter = FileAdaptor.get_instance()
+    #     fileAdapter.loaddata("load_test")
 
     def file_adv_save(self):
         dialog = QtWidgets.QFileDialog.getSaveFileName(None, "파일 저장", "", "cw 파일 (*.cw)")
@@ -356,7 +375,15 @@ def sending_files():
         #전송구문
         os.remove(dirty_checker)
 
+
+def openWebsocket():
+    fileadapter = FileAdaptor.get_instance()
+    fileadapter.serverOn()
+
 if __name__ == "__main__":
+    webSocketThread = threading.Thread(target=openWebsocket)
+    webSocketThread.start()
+
     save_temp = "./data/temp"
     hosts_file = './data/localhosts.txt'
     network_process = multiprocessing.Process(target=sending_files)
