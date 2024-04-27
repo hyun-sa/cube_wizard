@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget, QLabel, QMenu
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget, QLabel, QMenu, QCheckBox, QDialogButtonBox
 from PyQt5.QtCore import pyqtSlot, QEvent, Qt
 import multiprocessing, time, os ,shutil, requests, sys
 
@@ -227,7 +227,13 @@ class HostListDialog(QDialog):
         
         
     def new_host(self):
-        print("새 호스트 등록")
+        new_dialog = NewHostDialog()
+        result = new_dialog.exec_()
+        if result:
+            print("Private:", new_dialog.privateCheckBox.isChecked())
+            print("Host Password:", new_dialog.passwordLineEdit.text())
+            print("Host Name:", new_dialog.nameLineEdit.text())
+            print("Host Port:", new_dialog.portLineEdit.text())
         
         
     def hostDoubleClicked(self, item):
@@ -300,6 +306,43 @@ class AddHostDialog(QDialog):
         QMessageBox.information(self, "등록 완료", "등록되었습니다")
         
         self.accept()
+
+
+class NewHostDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("New Host")
+        self.setGeometry(100, 100, 200, 200)
+        
+        self.layout = QVBoxLayout()
+        
+        self.privateCheckBox = QCheckBox("비공개")
+        self.layout.addWidget(self.privateCheckBox)
+        
+        self.passwordLineEdit = QLineEdit()
+        self.passwordLineEdit.setPlaceholderText("호스트 비밀번호")
+        self.layout.addWidget(self.passwordLineEdit)
+        
+        self.nameLineEdit = QLineEdit()
+        self.nameLineEdit.setPlaceholderText("호스트 이름")
+        self.layout.addWidget(self.nameLineEdit)
+        
+        self.portLineEdit = QLineEdit()
+        self.portLineEdit.setPlaceholderText("호스트 포트")
+        self.layout.addWidget(self.portLineEdit)
+        
+        buttonsLayout = QHBoxLayout()
+        self.okButton = QPushButton("확인")
+        self.okButton.clicked.connect(self.accept)
+        buttonsLayout.addWidget(self.okButton)
+        
+        self.cancelButton = QPushButton("취소")
+        self.cancelButton.clicked.connect(self.reject)
+        buttonsLayout.addWidget(self.cancelButton)
+        
+        self.layout.addLayout(buttonsLayout)
+        
+        self.setLayout(self.layout)
 
 
 
