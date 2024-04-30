@@ -36,3 +36,76 @@ forBlock['add_text'] = function (
   const code = `${addText}(${text}, ${color});\n`;
   return code;
 };
+
+forBlock['consolePrint'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator
+) {
+  const text = generator.valueToCode(block, 'TEXT', Order.NONE) || "''";
+
+  const consolePrint = generator.provideFunction_(
+    'consolePrint',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text) {
+
+  // Log text to the console.
+  console.log(text);
+}`
+  );
+  // Generate the function call for this block.
+  const code = `${consolePrint}(${text});\n`;
+  return code;
+};
+
+forBlock['Alert'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator
+) {
+  const text = generator.valueToCode(block, 'TEXT', Order.NONE) || "''";
+
+  const Alert = generator.provideFunction_(
+    'printAlert',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text) {
+
+  // Show text in an alert dialog.
+  alert(text);
+}`
+  );
+  // Generate the function call for this block.
+  const code = `${Alert}(${text});\n`;
+  return code;
+};
+
+forBlock['stack_push'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const functionName = generator.provideFunction_(
+    'stack_push',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value) {
+  stack.push(value);
+}`
+  );
+
+  const code = `${functionName}(${value});\n`;
+  return code;
+};
+
+forBlock['stack_pop'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const functionName = generator.provideFunction_(
+    'stack_pop',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}() {
+  return stack.pop();
+}`
+  );
+
+  return [`${functionName}()`, 0];
+};
+
+forBlock['stack_top'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const functionName = generator.provideFunction_(
+    'stack_top',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}() {
+  return stack[stack.length - 1];
+}`
+  );
+
+  return [`${functionName}()`, 0];
+};

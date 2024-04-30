@@ -121,7 +121,7 @@ export class fileFacade {
   });
 
   savefile = (() => {
-    var W3CWebSocket = require('src/WebSocket').w3cwebsocket;
+    var W3CWebSocket = require('websocket').w3cwebsocket;
     const promise = new Promise<number>(() => {
       // 비동기 작업
       console.log("server start");

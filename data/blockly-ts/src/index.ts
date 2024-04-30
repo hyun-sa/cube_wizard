@@ -5,7 +5,8 @@
  */
 
 import * as Blockly from 'blockly';
-import {blocks} from './blocks/text';
+import {blocks} from './blocks/custom';
+import {stblocks} from './blocks/stack';
 import {forBlock} from './generators/javascript';
 import {javascriptGenerator} from 'blockly/javascript';
 import {save, load} from './serialization';
@@ -18,12 +19,13 @@ import { saveAs } from 'file-saver';
 // import {WebSocketClient} from './WebSocket';
 // import { WebSocket } from 'ws';
 const WebSocket = require('ws');
-const WebSocketClient = require('src/WebSocket').client;
+const WebSocketClient = require('websocket').client;
 // import ws, { WebSocketServer } from "ws";
 
 
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
+Blockly.common.defineBlocks(stblocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
 
 // Set up UI elements and inject Blockly

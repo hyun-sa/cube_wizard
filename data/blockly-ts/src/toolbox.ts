@@ -712,5 +712,45 @@ export const toolbox = {
       'categorystyle': 'procedure_category',
       'custom': 'PROCEDURE',
     },
-  ],
+    //---------------------------------------------
+    {
+      'kind': 'category',
+      'name': 'Custom',
+      'colour':'200',
+      'contents':[
+        {
+          'kind': 'block',
+          'type': 'add_text',
+        },
+        {
+          'kind':'block',
+          'type':'consolePrint',
+        },
+        {
+          'kind':'block',
+          'type':'Alert',
+        }
+      ]
+    },
+    //----------------------------------------------
+    {
+      "kind": "category",
+      "name": "Stack",
+      "colour": "500",
+      "contents": [
+      {
+        "kind": "block",
+        "type": "stack_push"
+      },
+      {
+        "kind": "block",
+        "type": "stack_pop"
+      },
+      {
+        "kind": "block",
+        "type": "stack_top"
+      }
+      ]
+    }
+  ]
 };
