@@ -17,9 +17,9 @@ class MainWindow(QtWidgets.QMainWindow):
         print(file_path)
 
         # local_file 활용
-        self.browser.setUrl(local_url)
+        # self.browser.setUrl(local_url)
         # Node.js 활용
-        # self.browser.setUrl(QtCore.QUrl("http://localhost:8080/"))
+        self.browser.setUrl(QtCore.QUrl("http://localhost:8080/"))
 
         self.setCentralWidget(self.browser)
 
@@ -72,7 +72,10 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = QtWidgets.QFileDialog.getSaveFileName(None, "파일 저장", "", "cw 파일 (*.cw)")
         file_path = dialog[0]
         if file_path:
-            shutil.copy2(save_temp, file_path)
+            fileAdapter = FileAdaptor.get_instance()
+            file = fileAdapter.getdata()
+            fileAdapter.save_as_file(file, file_path)
+            # shutil.copy2(save_temp, file_path)
         else:
             print("파일 선택 취소")
 
@@ -87,13 +90,15 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = QtWidgets.QFileDialog.getOpenFileName(None, "파일 불러오기", "", "cw 파일 (*.cw)")
         file_path = dialog[0]
         if file_path:
-            shutil.copy2(file_path, save_temp)
-            with open(save_temp, 'rb') as f:
-                files = {'file' : (save_temp, f)}
-                requests.post("http://localhost:15000", files=files)
+            fileAdapter = FileAdaptor.get_instance()
+            fileAdapter.loaddata(file_path)
+            # shutil.copy2(file_path, save_temp)
+            # with open(save_temp, 'rb') as f:
+            #     files = {'file' : (save_temp, f)}
+            #     requests.post("http://localhost:15000", files=files)
         else:
             print("파일 선택 취소")
-            
+
 
     # # file_load legacy
     # def file_load(self):

@@ -8,6 +8,8 @@ import * as Blockly from 'blockly/core';
 import { setMainWorkspace } from 'blockly/core/common';
 import { javascriptGenerator } from 'blockly/javascript';
 import { toolbox } from './toolbox';
+import { workspaceCommentOption } from 'blockly/core/contextmenu';
+import { rejections } from 'winston';
 
 const storageKey = 'mainWorkspace';
 
@@ -20,21 +22,15 @@ export class fileFacade {
   private static isLoaded: boolean;
 
   private static workspace: Blockly.Workspace;
-  // private static workspace: Blockly.Workspace = Blockly.getMainWorkspace();
-
-  // constructor() {
-  //   this.jsonData = undefined;
-  // }
-
 
   private static codeDiv = document.getElementById('generatedCode')?.firstChild;
   private static outputDiv = document.getElementById('output');
-  private static blocklyDiv = document.getElementById('blocklyDiv');
-  private static blocklyWidgetDiv = document.getElementById('blocklyWidgetDiv');
+  // private static blocklyDiv = document.getElementById('blocklyDiv');
+  // private static blocklyWidgetDiv = document.getElementById('blocklyWidgetDiv');
   // private static ws = fileFacade.blocklyDiv && Blockly.inject(fileFacade.blocklyDiv, {toolbox});
 
-
-
+  private static promise: Promise<number> | null = null;
+  private static stopFlag = false;
 
   private runCode = () => {
     const code = javascriptGenerator.workspaceToCode(fileFacade.workspace);
@@ -81,32 +77,15 @@ export class fileFacade {
     // console.log(data);
     if (!data) return;
     console.log("load" + data);
+    
+    if (data !== null && fileFacade.workspace) {
 
-
-
-    // load(workspace);
-    // Don't emit events during loading.
-    // Blockly.Events.disable();
-    // const ws = fileFacade.blocklyDiv && Blockly.inject(fileFacade.blocklyDiv, {toolbox});
-    // if (ws) {
-    //   Blockly.serialization.workspaces.load(JSON.parse(data), ws, undefined);
-    // }
-
-    // Blockly.Events.enable();
-    // this.runCode();
-    // const serializer = new Blockly.serialization.variables.VariableSerializer();
-    // const state = serializer.save(fileFacade.workspace);
-    // this.clearCode();
-    Blockly.Events.disable();
-
-    if (data !== null) {
-      // serializer.load(JSON.parse(data), fileFacade.workspace);
-      // if (fileFacade.outputDiv) fileFacade.outputDiv.innerHTML = 'success';
+      Blockly.Events.disable();
       Blockly.serialization.workspaces.load(JSON.parse(data), fileFacade.workspace);
       if (fileFacade.outputDiv) fileFacade.outputDiv.innerHTML = 'succe2212ss';
+      Blockly.Events.enable();
     }
-    Blockly.Events.enable();
-    // this.runCode();
+    
 
   };
   setData = ((data: string) => {
@@ -121,11 +100,22 @@ export class fileFacade {
   });
 
   savefile = (() => {
+    fileFacade.stopFlag = true;
+    // fileFacade.promise = null;
+    this.runWebSocket();
+  });
+
+  
+  runWebSocket = (() => {
     var W3CWebSocket = require('websocket').w3cwebsocket;
-    const promise = new Promise<number>(() => {
+    var client = new W3CWebSocket('ws://localhost:9998/');
+
+    // if (fileFacade.promise === null) {
+      fileFacade.promise = new Promise<number>(() => {
       // 비동기 작업
       console.log("server start");
-      var client = new W3CWebSocket('ws://localhost:9998/');
+      
+
 
       function sendJSON(jsonData: string) {
         if (client.readyState === client.OPEN) {
@@ -152,7 +142,6 @@ export class fileFacade {
           fileFacade.isLoaded = true;
           if (fileFacade.outputDiv) fileFacade.outputDiv.innerHTML = fileFacade.loadData;
           this.loading();
-
         }
 
       };
@@ -160,9 +149,16 @@ export class fileFacade {
       client.onclose = function () {
         console.log('echo-protocol Client Closed');
       };
+      if (fileFacade.stopFlag) {
+        fileFacade.stopFlag = false;
+        // client.close();
+        // return;
+      }
     });
+    // fileFacade.promise.then();///
+  // }
 
-    promise.then();
+    
   });
 
 }

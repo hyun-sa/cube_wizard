@@ -35,7 +35,7 @@ class FileAdaptor:
     def save_as_file(self, file, filename):
         app_data_path = os.getenv('LOCALAPPDATA')
         dir_path = os.path.join(app_data_path, 'cubewizard', 'temp')
-        file_path = os.path.join(dir_path, f"{filename}.cw")
+        file_path = os.path.join(dir_path, f"{filename}")
 
         try:
             if not os.path.exists(file_path):
@@ -50,7 +50,7 @@ class FileAdaptor:
     def loaddata(self, filename='test'):
         app_data_path = os.getenv('LOCALAPPDATA')
         dir_path = os.path.join(app_data_path, 'cubewizard', 'temp')
-        file_path = os.path.join(dir_path, f'{filename}.cw')
+        file_path = os.path.join(dir_path, f'{filename}')
         print(filename)
         try:
             with open(file_path, 'r') as f:

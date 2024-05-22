@@ -53,10 +53,10 @@ const runCode = () => {
 };
 
 
-
 if (ws) {
     // Load the initial state from storage and run the code.
-  
+  websocket.setWorkspace(ws); 
+  websocket.runWebSocket();
   load(ws);
   runCode();
   
