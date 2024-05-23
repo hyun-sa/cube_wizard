@@ -82,7 +82,7 @@ export class fileFacade {
 
       Blockly.Events.disable();
       Blockly.serialization.workspaces.load(JSON.parse(data), fileFacade.workspace);
-      if (fileFacade.outputDiv) fileFacade.outputDiv.innerHTML = 'succe2212ss';
+      if (fileFacade.outputDiv) fileFacade.outputDiv.innerHTML = 'success';
       Blockly.Events.enable();
     }
     
