@@ -32,8 +32,82 @@ pre, code {
 #generatedCode {
     height: 50%;
     background-color: rgb(247, 240, 228);
+    color:#000;
 }
 
 #output {
     height: 50%;
 }
+
+.editor-container {
+    width: 80%;
+    min-width: 400px;
+    margin: auto;
+    text-align: right;
+}
+#codeEditor {
+    width: 90%;
+    height: 400px;
+    padding: 10px;
+    margin: 5%;
+    border: none;
+    resize: none;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    text-align: left;
+}
+.button-container {
+    text-align: right;
+    margin-top: 10px;
+}
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+#outputEditor {
+    color: #fff;
+
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #282c34;
+  }
+  /* h1 {
+    margin-bottom: 20px;
+  } */
+  #editor {
+    width: 80%;
+    height: 70%;
+    text-align: left;
+  }
+  .CodeMirror {
+    height: 100%;
+  }
+  #run {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  iframe {
+    width: 90%;
+    height: 50%;
+    margin: 20px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }

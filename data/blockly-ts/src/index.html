@@ -1,17 +1,93 @@
 <!DOCTYPE html>
- <html>
-   <head>
-     <meta charset="utf-8" />
-     <title>Blockly Sample App</title>
-   </head>
-   <body>
-    <div id="pageContainer">
-      <div id="blocklyDiv"></div>
-      <div id="outputPane">
-        <pre id="generatedCode"><code></code></pre>
-        <div id="output"></div>
-      </div>
+<html>
 
+<head>
+  <meta charset="utf-8" />
+  <title>Blockly Sample App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+  <style>
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+</head>
+
+<body>
+  <div id="pageContainer">
+    <!-- 블록 에디터 -->
+    <div id="blocklyDiv"></div>
+    <!-- 코드 에디터 시작 -->
+    <div class="editor-container">
+      <!-- <textarea id="codeEditor" placeholder="여기에 코드 작성..."></textarea> -->
+      <div id="codeEditor">
+        <textarea id="editor"></textarea>
+      </div>
+      
+      <button id="run">Run Code</button>
+      <iframe id="output"></iframe>
+      <div class="compare">
+        <button id="compare">Compare Code</button>
+      </div>
+      <div id="outputEditor"></div>
     </div>
-   </body>
- </html>
+    <!-- 코드 에디터 끝 -->
+    <hr>
+    <!-- 출력 -->
+    <div id="outputPane">
+      <button id="javascript">javascript</button>
+      <button id="python">python</button>
+      <pre id="generatedCode"><code></code></pre>
+      <div id="output"></div>
+    </div>
+
+  </div>
+  <script>
+    // testing for running code on frontend
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+      lineNumbers: true,
+      mode: "javascript",
+      theme: "dracula"
+    });
+
+    document.getElementById("run").addEventListener("click", function() {
+      var code = editor.getValue();
+      alert(code);
+      var output = document.getElementById("output");
+      output.innerHTML = '';
+      
+
+      (function() {
+        // var oldLog = console.log;
+        
+        var console = {};
+        console.log = function(message) {
+          if (typeof message === 'object') {
+            output.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br>';
+          } else {
+            output.innerHTML += message + '<br>';
+          }
+        };
+
+        try {
+          var result = eval(code);
+          if (result !== undefined) {
+            output.innerHTML += '<br>Result: ' + result;
+          }
+        } catch (e) {
+          output.innerHTML += '<br>Error: ' + e.message;
+        }
+
+        // console.log = oldLog;  // Restore console.log
+      })();
+      
+
+      // var iframeDocument = output.contentDocument || output.contentWindow.document;
+      // iframeDocument.open();
+      // iframeDocument.write('<!DOCTYPE html><html><head><title>Output</title></head><body><script>' + code + '<\/script></body></html>');
+      // iframeDocument.close();
+    });
+  </script>
+</body>
+
+</html>
