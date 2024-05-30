@@ -22,7 +22,7 @@ forBlock2['add_text'] = function (
 
   const addText = generator.provideFunction_(
     'addText',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text, color) {
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text, color): {
 
   # Add text to the output area.
   const outputDiv = document.getElementById('output');
@@ -45,7 +45,7 @@ forBlock2['consolePrint'] = function (
 
   const consolePrint = generator.provideFunction_(
     'consolePrint',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(text)
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(text):
 
   # Log text to the console.
   print(text);
@@ -64,7 +64,7 @@ forBlock2['Alert'] = function (
 
   const Alert = generator.provideFunction_(
     'printAlert',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text)
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text):
 
   # Show text in an alert dialog.
   alert(text);
@@ -79,7 +79,7 @@ forBlock2['stack_push'] = function (block: Blockly.Block, generator: Blockly.Cod
   const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
   const functionName = generator.provideFunction_(
     'stack_push',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(value,list) 
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, list): 
   list.append(value,list);
 `
   );
@@ -91,7 +91,7 @@ forBlock2['stack_push'] = function (block: Blockly.Block, generator: Blockly.Cod
 forBlock2['stack_pop'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
   const functionName = generator.provideFunction_(
     'stack_pop',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}()
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}():
   return stack.pop();
 `
   );
@@ -102,7 +102,7 @@ forBlock2['stack_pop'] = function (block: Blockly.Block, generator: Blockly.Code
 forBlock2['stack_top'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
   const functionName = generator.provideFunction_(
     'stack_top',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}()
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}():
   return stack[-1];
 `
   );
