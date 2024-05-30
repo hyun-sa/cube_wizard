@@ -7,6 +7,7 @@
 import * as Blockly from 'blockly/core';
 import { setMainWorkspace } from 'blockly/core/common';
 import { javascriptGenerator } from 'blockly/javascript';
+import { PythonGenerator } from 'blockly/python';
 import { toolbox } from './toolbox';
 import { workspaceCommentOption } from 'blockly/core/contextmenu';
 import { rejections } from 'winston';

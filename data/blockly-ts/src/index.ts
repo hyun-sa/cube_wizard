@@ -8,6 +8,7 @@ import * as Blockly from 'blockly';
 import { blocks } from './blocks/custom';
 import { stblocks } from './blocks/stack';
 import { forBlock } from './generators/javascript';
+import { forBlock2 } from './generators/python';
 import { javascriptGenerator } from 'blockly/javascript';
 import { save, load } from './serialization';
 import { toolbox } from './toolbox';
@@ -29,6 +30,7 @@ const WebSocketClient = require('websocket').client;
 Blockly.common.defineBlocks(blocks);
 Blockly.common.defineBlocks(stblocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
+Object.assign(pythonGenerator.forBlock,forBlock2);
 
 
 // Set up UI elements and inject Blockly
