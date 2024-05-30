@@ -23,12 +23,17 @@ previousStatement, next~ 는 위아래 꼭지 생성 여부 true 면 생성 (위
 
 const stack_push = {
   "type": "stack_push",
-  "message0": "Push %1 onto stack",
+  "message0": "Push %1 onto %2",
   "args0": [
     {
       "type": "input_value",
       "name": "VALUE",
       "check": "Number"
+    },
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
     }
   ],
   "previousStatement": null,
@@ -41,18 +46,34 @@ const stack_push = {
 
 const stack_pop = {
   "type": "stack_pop",
-  "message0": "Pop from stack",
+  "message0": "Pop from %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    },
+  ],
   "output": "Number",
   "colour": 500,
+  "previousStatement": null,
   "tooltip": "Pops the top value from the stack",
   "helpUrl": ""
 };
 
 const stack_top = {
   "type": "stack_top",
-  "message0": "Top of stack",
+  "message0": "Top of %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    },
+  ],
   "output": "Number",
   "colour": 500,
+  "previousStatement": null,
   "tooltip": "Returns the top value of the stack",
   "helpUrl": ""
 }

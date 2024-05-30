@@ -33,7 +33,7 @@ forBlock2['add_text'] = function (
 }`
   );
   // Generate the function call for this block.
-  const code = `${addText}(${text}, ${color});\n`;
+  const code = `${addText}(${text}, ${color})\n`;
   return code;
 };
 
@@ -52,7 +52,7 @@ forBlock2['consolePrint'] = function (
 `
   );
   // Generate the function call for this block.
-  const code = `${consolePrint}(${text});\n`;
+  const code = `${consolePrint}(${text})\n`;
   return code;
 };
 
@@ -67,45 +67,48 @@ forBlock2['Alert'] = function (
     `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text):
 
   # Show text in an alert dialog.
-  alert(text);
+  alert(text)
 `
   );
   // Generate the function call for this block.
-  const code = `${Alert}(${text});\n`;
+  const code = `${Alert}(${text})\n`;
   return code;
 };
 
 forBlock2['stack_push'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
   const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
   const functionName = generator.provideFunction_(
     'stack_push',
     `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, list): 
-  list.append(value,list);
+  list.append(value)
 `
   );
 
-  const code = `${functionName}(${value});\n`;
+  const code = `${functionName}(${value},${list})\n`;
   return code;
 };
 
 forBlock2['stack_pop'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
   const functionName = generator.provideFunction_(
     'stack_pop',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}():
-  return stack.pop();
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
+  return list.pop()
 `
   );
 
-  return [`${functionName}()`, 0];
+  return [`${functionName}(${list})`, 0];
 };
 
 forBlock2['stack_top'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
   const functionName = generator.provideFunction_(
     'stack_top',
-    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}():
-  return stack[-1];
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
+  return list[-1]
 `
   );
 
-  return [`${functionName}()`, 0];
+  return [`${functionName}(${list})`, 0];
 };
