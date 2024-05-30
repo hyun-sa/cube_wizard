@@ -112,3 +112,15 @@ forBlock['stack_top'] = function (block: Blockly.Block, generator: Blockly.CodeG
 
   return [`${functionName}(${list})`, 0];
 };
+
+forBlock['is_empty'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'is_empty',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(list) {
+  return list.length === 0;
+}`
+  );
+
+  return [`${functionName}(${list})`, 0];
+};

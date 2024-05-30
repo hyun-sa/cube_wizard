@@ -22,7 +22,7 @@ forBlock2['add_text'] = function (
 
   const addText = generator.provideFunction_(
     'addText',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text, color): {
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(text, color): {
 
   # Add text to the output area.
   const outputDiv = document.getElementById('output');
@@ -64,10 +64,10 @@ forBlock2['Alert'] = function (
 
   const Alert = generator.provideFunction_(
     'printAlert',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text):
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(text):
 
   # Show text in an alert dialog.
-  alert(text)
+  print(text)
 `
   );
   // Generate the function call for this block.
@@ -107,6 +107,18 @@ forBlock2['stack_top'] = function (block: Blockly.Block, generator: Blockly.Code
     'stack_top',
     `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
   return list[-1]
+`
+  );
+
+  return [`${functionName}(${list})`, 0];
+};
+
+forBlock2['is_empty'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'is_empty',
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
+  return len(list) == 0
 `
   );
 
