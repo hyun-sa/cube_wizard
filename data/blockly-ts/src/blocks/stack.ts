@@ -94,7 +94,16 @@ const is_empty ={
   "helpUrl": ""
 }
 
+const newline ={
+  "type": "newline",
+  "message0": "new line",
+  "output":"String",
+  "colour": 200,
+  "tooltip": "new line",
+  "helpUrl": ""
+}
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([stack_pop, stack_push, stack_top,is_empty]);
+export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([stack_pop, stack_push, stack_top, is_empty, newline]);

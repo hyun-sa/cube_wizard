@@ -729,6 +729,10 @@ export const toolbox = {
         {
           'kind':'block',
           'type':'Alert',
+        },
+        {
+          'kind':'block',
+          'type':'newline',
         }
       ]
     },

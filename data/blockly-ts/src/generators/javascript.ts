@@ -124,3 +124,7 @@ forBlock['is_empty'] = function (block: Blockly.Block, generator: Blockly.CodeGe
 
   return [`${functionName}(${list})`, 0];
 };
+
+forBlock['newline'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  return ['"\\n"', 0];
+};
