@@ -729,6 +729,10 @@ export const toolbox = {
         {
           'kind':'block',
           'type':'Alert',
+        },
+        {
+          'kind':'block',
+          'type':'newline',
         }
       ]
     },
@@ -736,7 +740,7 @@ export const toolbox = {
     {
       "kind": "category",
       "name": "Stack",
-      "colour": "500",
+      "colour": "1000",
       "contents": [
       {
         "kind": "block",
@@ -749,7 +753,11 @@ export const toolbox = {
       {
         "kind": "block",
         "type": "stack_top"
-      }
+      },
+      {
+        "kind": "block",
+        "type": "is_empty"
+      },
       ]
     }
   ]

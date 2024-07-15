@@ -4,6 +4,11 @@ from PyQt5.QtCore import pyqtSlot, QEvent, Qt
 import multiprocessing, time, os ,shutil, requests, sys
 from WebSocket import FileAdaptor
 import threading
+import requests
+
+HOST = "10.198.137.118"
+PORT = 8000
+
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -116,9 +121,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def network_select(self):
         self.dialog = HostListDialog()
-        self.dialog.exec_()
-        #성공했다면
-        network_process.start()
+        selected_host = self.dialog.exec_()
+        if selected_host:
+            print(f"Selected host: {selected_host}")
+            network_process.start()
 
     def network_check(self):
         print("네트워크 확인")
@@ -145,6 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
 class HostListDialog(QDialog):
     def __init__(self):
         super().__init__()
+        self.selected_host = None
         self.setWindowTitle("Host List")
         
         self.hosts = []
@@ -156,6 +163,11 @@ class HostListDialog(QDialog):
         self.create_search_bar()
         self.create_host_list()
         self.create_buttons()
+    
+    
+    def exec_(self):
+        result = super().exec_()
+        return self.selected_host
         
         
     def create_search_bar(self):
@@ -261,7 +273,7 @@ class HostListDialog(QDialog):
         
         
     def hostDoubleClicked(self, item):
-        print(f"Selected host: {item.text()}")
+        self.selected_host = item.text()
         self.close()
         
         
@@ -377,7 +389,19 @@ def sending_files():
         if not os.path.isfile(dirty_checker):
             time.sleep(3)
             continue
-        #전송구문
+        FILE_PATH = "./data/temp.cw"
+
+        url = f"http://{HOST}:{PORT}/file"
+
+        try:
+            with open(FILE_PATH, "rb") as f:
+                file_data = f.read()
+
+            response = requests.post(url, data=file_data)
+            response.raise_for_status()
+            print(response.text)
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
         os.remove(dirty_checker)
 
 
