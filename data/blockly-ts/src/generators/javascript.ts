@@ -140,3 +140,81 @@ forBlock['sort'] = function (block: Blockly.Block, generator: Blockly.CodeGenera
 
   return `${functionName}(${list})\n`;
 };
+
+//----------------------------------------------------------------------------------------------
+
+forBlock['enque'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'queue_enqueue',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, queue) {
+      queue.push(value);
+    }`
+  );
+  const code = `${functionName}(${value}, ${list});\n`;
+  return code;
+};
+
+forBlock['deque'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'queue_dequeue',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(queue) {
+      return queue.shift();
+    }`
+  );
+
+  const code = `${functionName}(${list})\n`;
+  return code;
+};
+
+//-------------------------------------------------------------------------------
+
+forBlock['deque_add_front'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const deque = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'deque_add_front',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, deque) {
+      deque.unshift(value);
+    }`
+  );
+  const code = `${functionName}(${value}, ${deque});\n`;
+  return code;
+};
+
+forBlock['deque_add_back'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const deque = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'deque_add_back',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, deque) {
+      deque.push(value);
+    }`
+  );
+  const code = `${functionName}(${value}, ${deque});\n`;
+  return code;
+};
+
+forBlock['deque_remove_front'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const deque = generator.valueToCode(block, 'DEQUE', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'deque_remove_front',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(deque) {
+      return deque.shift();
+    }`
+  );
+  return [`${functionName}(${deque})`, 0];
+};
+
+forBlock['deque_remove_back'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const deque = generator.valueToCode(block, 'DEQUE', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'deque_remove_back',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(deque) {
+      return deque.pop();
+    }`
+  );
+  return [`${functionName}(${deque})`, 0];
+};

@@ -95,6 +95,7 @@ const websocket = fileFacade.getIstance();
 
     if(code) eval(code);
 
+    
     if (compareButton) {
       let result: any = null;
       let analyzer = null;
@@ -126,6 +127,7 @@ const websocket = fileFacade.getIstance();
         }
       });
     }
+
     
     // const pythonAnalyzer = new HalsteadComplexityAnalyzer(pythonCode, 'python');
     // const jsAnalyzer = new HalsteadComplexityAnalyzer(jsCode, 'javascript');

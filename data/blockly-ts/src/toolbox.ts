@@ -763,6 +763,62 @@ export const toolbox = {
         "type": "sort"
       },
       ]
-    }
+    },
+    //-----------------------------------------------------
+    {
+      "kind": "category",
+      "name": "Queue",
+      "colour": "700",
+      "contents": [
+      {
+        "kind": "block",
+        "type": "stack_push"
+      },
+      {
+        "kind": "block",
+        "type": "stack_pop"
+      },
+      {
+        "kind": "block",
+        "type": "stack_top"
+      },
+      {
+        "kind": "block",
+        "type": "is_empty"
+      },
+      {
+        "kind": "block",
+        "type": "sort"
+      },
+      ]
+    },
+    //------------------------------------------------------
+    {
+      "kind": "category",
+      "name": "Deque",
+      "colour": "400",
+      "contents": [
+      {
+        "kind": "block",
+        "type": "stack_push"
+      },
+      {
+        "kind": "block",
+        "type": "stack_pop"
+      },
+      {
+        "kind": "block",
+        "type": "stack_top"
+      },
+      {
+        "kind": "block",
+        "type": "is_empty"
+      },
+      {
+        "kind": "block",
+        "type": "sort"
+      },
+      ]
+    },
   ]
 };
