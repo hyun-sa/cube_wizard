@@ -21,9 +21,9 @@ previousStatement, next~ 는 위아래 꼭지 생성 여부 true 면 생성 (위
 */
 
 
-const stack_push = {
-  "type": "stack_push",
-  "message0": "Push %1 onto %2",
+const enqueue = {
+  "type": "enque",
+  "message0": "Enque %1 onto %2",
   "args0": [
     {
       "type": "input_value",
@@ -38,49 +38,15 @@ const stack_push = {
   ],
   "previousStatement": null,
   "nextStatement": null,
-  "colour": 1000,
-  "tooltip": "Pushes a value onto the stack",
+  "colour": 700,
+  "tooltip": "Adds a value to the end of the queue",
   "helpUrl": ""
 };
 
 
-const stack_pop = {
-  "type": "stack_pop",
-  "message0": "Pop from %1",
-  "args0": [
-    {
-      "type": "input_value",
-      "name": "LIST",
-      "check": "Array"
-    },
-  ],
-  "output": "Number",
-  "colour": 1000,
-  "previousStatement": null,
-  "tooltip": "Pops the top value from the stack",
-  "helpUrl": ""
-};
-
-const stack_top = {
-  "type": "stack_top",
-  "message0": "Top of %1",
-  "args0": [
-    {
-      "type": "input_value",
-      "name": "LIST",
-      "check": "Array"
-    },
-  ],
-  "output": "Number",
-  "colour": 1000,
-  "previousStatement": null,
-  "tooltip": "Returns the top value of the stack",
-  "helpUrl": ""
-}
-
-const is_empty ={
-  "type": "is_empty",
-  "message0": "Is %1 empty?",
+const dequeue = {
+  "type": "dequeue",
+  "message0": "Dequeue from queue %1",
   "args0": [
     {
       "type": "input_value",
@@ -88,38 +54,90 @@ const is_empty ={
       "check": "Array"
     }
   ],
-  "output": "Boolean",
-  "colour": 1000,
-  "tooltip": "Returns true if the stack is empty, false otherwise",
+  "output": "Number",
+  "colour": 700,
+  "tooltip": "Removes and returns the value from the front of the queue",
   "helpUrl": ""
-}
+};
 
-const newline ={
-  "type": "newline",
-  "message0": "new line",
-  "output":"String",
-  "colour": 200,
-  "tooltip": "new line",
-  "helpUrl": ""
-}
+//--------------------------------------------------------------------------------------
 
-const sort ={
-  "type": "sort",
-  "message0": "Sort %1",
+const deque_add_front = {
+  "type": "deque_add_front",
+  "message0": "Add %1 to front of deque %2",
   "args0": [
+    {
+      "type": "input_value",
+      "name": "VALUE",
+      "check": "Number"
+    },
     {
       "type": "input_value",
       "name": "LIST",
       "check": "Array"
     }
   ],
-  "colour": 200,
   "previousStatement": null,
   "nextStatement": null,
-  "tooltip": "list sort",
+  "colour": 260,
+  "tooltip": "Adds a value to the front of the deque",
+  "helpUrl": ""
+}
+
+const deque_add_back ={
+  "type": "deque_add_back",
+  "message0": "Add %1 to back of deque %2",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "VALUE",
+      "check": "Number"
+    },
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 260,
+  "tooltip": "Adds a value to the back of the deque",
+  "helpUrl": ""
+}
+
+const deque_remove_front ={
+  "type": "deque_remove_front",
+  "message0": "Remove from front of deque %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "output": "Number",
+  "colour": 260,
+  "tooltip": "Removes and returns the value from the front of the deque",
+  "helpUrl": ""
+}
+
+const deque_remove_back ={
+  "type": "deque_remove_back",
+  "message0": "Remove from back of deque %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "output": "Number",
+  "colour": 260,
+  "tooltip": "Removes and returns the value from the back of the deque",
   "helpUrl": ""
 }
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([stack_pop, stack_push, stack_top, is_empty, newline,sort]);
+export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([enqueue, dequeue, deque_add_back, deque_add_front, deque_remove_back, deque_remove_front]);
