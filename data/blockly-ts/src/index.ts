@@ -15,9 +15,12 @@ import { toolbox } from './toolbox';
 import './index.css';
 import { fileFacade } from './serialization';
 
+import { HalsteadComplexityAnalyzer } from './complex';
+
 import { saveAs } from 'file-saver';
 // import { pythonGenerator } from './generators/python';
 import { pythonGenerator } from 'blockly/python';
+import { string } from 'blockly/core/utils';
 
 // import {WebSocketClient} from './WebSocket';
 // import { WebSocket } from 'ws';
@@ -42,6 +45,7 @@ const ws = blocklyDiv && Blockly.inject(blocklyDiv, { toolbox });
 const websocket = fileFacade.getIstance();
 
 
+
 // const promise = new Promise<number>(() => {
   // 비동기 작업
 
@@ -57,28 +61,15 @@ const websocket = fileFacade.getIstance();
     const jsElement = document.getElementById('javascript');
     const pyElement = document.getElementById('python');
 
+    const compareButton = document.getElementById('compare'); 
+    const complexityOutputDiv = document.getElementById('complexity');
     // var code = null;
 
-    var language = 'javascript'
+    var language = 'javascript';
 
-    // if (jsElement) {
-    //   jsElement.addEventListener('click', function () {
-    //     language = 'javascript';
-    //     const code = javascriptGenerator.workspaceToCode(ws);
-    //     if (codeDiv) codeDiv.textContent = code;
-    //     alert('js clicked!');
-    //   });
-    // }
-    // if (pyElement) {
-    //   pyElement.addEventListener('click', function () {
-    //     language = 'python';
-    //     const code = pythonGenerator.workspaceToCode(ws);
-    //     if (codeDiv) codeDiv.textContent = code;
-    //     alert('python clicked!');
-    //   });
-    // }
 
-    var code = null;
+
+    var code: string = '';
 
     if (jsElement) {
       jsElement.addEventListener('click', function () {
@@ -103,6 +94,44 @@ const websocket = fileFacade.getIstance();
     if (outputDiv) outputDiv.innerHTML = '';
 
     if(code) eval(code);
+
+    if (compareButton) {
+      let result: any = null;
+      let analyzer = null;
+      compareButton.addEventListener('click', function () {
+        if (language == 'javascript') {
+          analyzer = new HalsteadComplexityAnalyzer(code, 'javascript');
+          result  = analyzer.analyze();
+          console.log('JavaScript Halstead Complexity:', analyzer.analyze());
+          if (complexityOutputDiv){
+            complexityOutputDiv.innerHTML = 'JavaScript Halstead Complexity: ' + JSON.stringify(analyzer.analyze());}
+        } else if (language == 'python') {
+          analyzer = new HalsteadComplexityAnalyzer(code, 'python');
+          result  = analyzer.analyze();
+          console.log(analyzer.analyze());
+        }
+        if (complexityOutputDiv){
+          const { metrics, complexity } = result;
+          const complexityOutput = 
+          `n1=${metrics.n1}\t\tlength=${complexity.programLength}\n` +
+          `n2=${metrics.n2}\t\tvocabulary=${complexity.vocabulary}\n` +
+          `N1=${metrics.N1}\t\tvolume=${complexity.volume}\n` +
+          `N2=${metrics.N2}\t\tdifficulty=${complexity.difficulty}\n` +
+          `\t\teffort=${complexity.effort}\n` +
+          `\t\ttime=${complexity.time}\n` +
+          `\t\tbugs=${complexity.bugs}`;
+
+          console.log(complexityOutput);
+          complexityOutputDiv.innerHTML = complexityOutput; 
+        }
+      });
+    }
+    
+    // const pythonAnalyzer = new HalsteadComplexityAnalyzer(pythonCode, 'python');
+    // const jsAnalyzer = new HalsteadComplexityAnalyzer(jsCode, 'javascript');
+  
+    // console.log('Python Halstead Complexity:', pythonAnalyzer.analyze());
+    // console.log('JavaScript Halstead Complexity:', jsAnalyzer.analyze());
   };
 
 
@@ -111,7 +140,7 @@ const websocket = fileFacade.getIstance();
     websocket.setWorkspace(ws);
     websocket.runWebSocket();
     load(ws);
-    runCode();
+    // runCode();
 
     // Every time the workspace changes state, save the changes to storage.
     ws.addChangeListener((e: Blockly.Events.Abstract) => {
