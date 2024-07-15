@@ -6,10 +6,6 @@ from WebSocket import FileAdaptor
 import threading
 import requests
 
-HOST = "10.198.137.118"
-PORT = 8000
-
-
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -124,6 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
         selected_host = self.dialog.exec_()
         if selected_host:
             print(f"Selected host: {selected_host}")
+            network_process = multiprocessing.Process(target=sending_files, args=(selected_host,), daemon=True)
             network_process.start()
 
     def network_check(self):
@@ -141,8 +138,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event: QEvent) -> None:
         reply = QMessageBox.question(self, '종료', '저장되지 않은 내용은 삭제됩니다. 정말로 종료하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            if network_process and network_process.is_alive():
-                network_process.kill()
             event.accept()
         else:
             event.ignore()
@@ -382,24 +377,39 @@ class NewHostDialog(QDialog):
 
 
 
-def sending_files():
-    print("전송")
+def sending_files(path_to_send):
+    print(f"{path_to_send}")
     dirty_checker = "./data/isdirty"
+    if path_to_send[0] == "*":
+        ipaddr = list(path_to_send.split(":"))[1].strip()
+        port = list(path_to_send.split(":"))[2].split("*")[0].strip()
+        passwd = list(path_to_send.split("*"))[2].strip()
+    else:
+        ipaddr = list(path_to_send.split(":"))[1].strip()
+        port = list(path_to_send.split(":"))[2].strip()
+        passwd = None
     while True:
         if not os.path.isfile(dirty_checker):
             time.sleep(3)
             continue
         FILE_PATH = "./data/temp.cw"
 
-        url = f"http://{HOST}:{PORT}/file"
+        url = f"http://{ipaddr}:{port}/file"
 
         try:
-            with open(FILE_PATH, "rb") as f:
-                file_data = f.read()
+            if passwd:
+                response = requests.post(f"{url}/password", data=passwd.encode())
+                response.raise_for_status()
 
-            response = requests.post(url, data=file_data)
-            response.raise_for_status()
-            print(response.text)
+            if not passwd or response.text == "Password accepted":
+                with open(FILE_PATH, "rb") as f:
+                    file_data = f.read()
+                response = requests.post(url, data=file_data)
+                response.raise_for_status()
+                print(response.text)
+            else:
+                print("Password not accepted. File not sent.")
+                break
         except requests.exceptions.RequestException as e:
             print(f"Error occurred: {e}")
         os.remove(dirty_checker)
@@ -415,7 +425,6 @@ if __name__ == "__main__":
 
     save_temp = "./data/temp"
     hosts_file = './data/localhosts.txt'
-    network_process = multiprocessing.Process(target=sending_files)
     app = QtWidgets.QApplication([])
     window = MainWindow()
     window.show()
