@@ -128,3 +128,15 @@ forBlock2['is_empty'] = function (block: Blockly.Block, generator: Blockly.CodeG
 forBlock2['newline'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
   return ['"\\n"', 0];
 };
+
+forBlock2['sort'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block,'LIST',Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'sort',
+    `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
+  list.sort()
+`
+  );
+
+  return `${functionName}(${list})\n`;
+};

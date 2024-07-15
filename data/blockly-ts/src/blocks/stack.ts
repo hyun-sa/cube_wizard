@@ -103,7 +103,23 @@ const newline ={
   "helpUrl": ""
 }
 
+const sort ={
+  "type": "sort",
+  "message0": "Sort %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "colour": 200,
+  "previousStatement": null,
+  "nextStatement": null,
+  "tooltip": "list sort",
+  "helpUrl": ""
+}
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([stack_pop, stack_push, stack_top, is_empty, newline]);
+export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([stack_pop, stack_push, stack_top, is_empty, newline,sort]);

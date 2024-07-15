@@ -758,6 +758,10 @@ export const toolbox = {
         "kind": "block",
         "type": "is_empty"
       },
+      {
+        "kind": "block",
+        "type": "sort"
+      },
       ]
     }
   ]
