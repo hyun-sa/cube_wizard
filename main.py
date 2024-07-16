@@ -5,6 +5,11 @@ import multiprocessing, time, os ,shutil, requests, sys
 from WebSocket import FileAdaptor
 import threading
 import requests
+import http.server
+import socketserver
+
+
+Host_passwd = None
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -260,11 +265,16 @@ class HostListDialog(QDialog):
     def new_host(self):
         new_dialog = NewHostDialog()
         result = new_dialog.exec_()
+        
         if result:
-            print("Private:", new_dialog.privateCheckBox.isChecked())
-            print("Host Password:", new_dialog.passwordLineEdit.text())
-            print("Host Name:", new_dialog.nameLineEdit.text())
-            print("Host Port:", new_dialog.portLineEdit.text())
+            if new_dialog.portLineEdit.text():
+                port = int(new_dialog.portLineEdit.text())
+            else:
+                port = 15000
+            if new_dialog.passwordLineEdit.text():
+                Host_passwd = int(new_dialog.passwordLineEdit.text())
+            Host_process = multiprocessing.Process(target=host_function, args=(port,), daemon=True)
+            Host_process.start()
         
         
     def hostDoubleClicked(self, item):
@@ -376,7 +386,6 @@ class NewHostDialog(QDialog):
         self.setLayout(self.layout)
 
 
-
 def sending_files(path_to_send):
     print(f"{path_to_send}")
     dirty_checker = "./data/isdirty"
@@ -413,6 +422,37 @@ def sending_files(path_to_send):
         except requests.exceptions.RequestException as e:
             print(f"Error occurred: {e}")
         os.remove(dirty_checker)
+        
+        
+def host_function(port):
+    with socketserver.TCPServer(("", port), FileReceiveHandler) as httpd:
+        print(f"Waiting for file transfer at http://localhost:{port}/file")
+        httpd.serve_forever()
+
+
+class FileReceiveHandler(http.server.SimpleHTTPRequestHandler):
+    def do_POST(self):
+        if self.path == '/file':
+            content_length = int(self.headers['Content-Length'])
+            file_data = self.rfile.read(content_length)
+
+            with open("received_cw", "wb") as f:
+                f.write(file_data)
+
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"File received successfully.")
+        elif self.path == '/password':
+            content_length = int(self.headers['Content-Length'])
+            password = self.rfile.read(content_length).decode()
+            if not Host_passwd or password == Host_passwd:
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"Password accepted")
+            else:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(b"Password not accepted")
 
 
 def openWebsocket():
