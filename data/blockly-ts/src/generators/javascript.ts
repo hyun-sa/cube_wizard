@@ -218,3 +218,62 @@ forBlock['deque_remove_back'] = function (block: Blockly.Block, generator: Block
   );
   return [`${functionName}(${deque})`, 0];
 };
+
+forBlock['priority_queue_enqueue'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const priority = generator.valueToCode(block, 'PRIORITY', Order.NONE) || "0";
+  const queue = generator.valueToCode(block, 'QUEUE', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'priority_queue_enqueue',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, priority, queue) {
+      queue.push({value: value, priority: priority});
+      queue.sort((a, b) => a.priority - b.priority);
+    }`
+  );
+  const code = `${functionName}(${value}, ${priority}, ${queue});\n`;
+  return code;
+};
+
+forBlock['priority_queue_dequeue'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const queue = generator.valueToCode(block, 'QUEUE', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'priority_queue_dequeue',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(queue) {
+      return queue.shift().value;
+    }`
+  );
+  return [`${functionName}(${queue})`, 0];
+};
+
+forBlock['linked_list_add'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const value = generator.valueToCode(block, 'VALUE', Order.NONE) || "''";
+  const list = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'linked_list_add',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(value, list) {
+      list.push({value: value, next: null});
+      if (list.length > 1) {
+        list[list.length - 2].next = list[list.length - 1];
+      }
+    }`
+  );
+  const code = `${functionName}(${value}, ${list});\n`;
+  return code;
+};
+
+forBlock['linked_list_remove_first'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const list = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
+  const functionName = generator.provideFunction_(
+    'linked_list_remove_first',
+    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(list) {
+      if (list.length > 0) {
+        const removedValue = list[0].value;
+        list.shift();
+        return removedValue;
+      } else {
+        return null;
+      }
+    }`
+  );
+  return [`${functionName}(${list})`, 0];
+};

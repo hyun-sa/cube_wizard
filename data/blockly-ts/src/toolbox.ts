@@ -820,5 +820,35 @@ export const toolbox = {
       },
       ]
     },
+    {
+      "kind": "category",
+      "name": "Priority_queue",
+      "colour": "450",
+      "contents": [
+      {
+        "kind": "block",
+        "type": "priority_queue_enqueue"
+      },
+      {
+        "kind": "block",
+        "type": "priority_queue_dequeue"
+      },
+      ]
+    },
+    {
+      "kind": "category",
+      "name": "Linked_list",
+      "colour": "500",
+      "contents": [
+      {
+        "kind": "block",
+        "type": "linked_list_add"
+      },
+      {
+        "kind": "block",
+        "type": "linked_list_remove_first"
+      },
+      ]
+    },
   ]
 };

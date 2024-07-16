@@ -137,7 +137,90 @@ const deque_remove_back ={
   "tooltip": "Removes and returns the value from the back of the deque",
   "helpUrl": ""
 }
+
+const priorityQueueEnqueue = {
+  "type": "priority_queue_enqueue",
+  "message0": "Enqueue %1 with priority %2 to %3",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "VALUE",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "PRIORITY",
+      "check": "Number"
+    },
+    {
+      "type": "input_value",
+      "name": "QUEUE",
+      "check": "Array"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 230,
+  "tooltip": "Enqueue an element with priority",
+  "helpUrl": ""
+};
+
+const priorityQueueDequeue = {
+  "type": "priority_queue_dequeue",
+  "message0": "Dequeue from %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "QUEUE",
+      "check": "Array"
+    }
+  ],
+  "output": "String",
+  "colour": 230,
+  "tooltip": "Dequeue the element with the highest priority",
+  "helpUrl": ""
+};
+
+const linkedListAdd = {
+  "type": "linked_list_add",
+  "message0": "Add %1 to %2",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "VALUE",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 160,
+  "tooltip": "Add an element to the linked list",
+  "helpUrl": ""
+};
+
+const linkedListRemoveFirst = {
+  "type": "linked_list_remove_first",
+  "message0": "Remove first from %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "LIST",
+      "check": "Array"
+    }
+  ],
+  "output": "String",
+  "colour": 160,
+  "tooltip": "Remove the first element from the linked list",
+  "helpUrl": ""
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([enqueue, dequeue, deque_add_back, deque_add_front, deque_remove_back, deque_remove_front]);
+export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([enqueue, dequeue, deque_add_back, deque_add_front, deque_remove_back, deque_remove_front,
+priorityQueueDequeue,priorityQueueEnqueue, linkedListAdd,linkedListRemoveFirst]);
