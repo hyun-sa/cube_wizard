@@ -63,6 +63,7 @@ const websocket = fileFacade.getIstance();
 
     const compareButton = document.getElementById('compare'); 
     const complexityOutputDiv = document.getElementById('complexity');
+    const runButton = document.getElementById('run');
     // var code = null;
 
     var language = 'javascript';
@@ -86,16 +87,47 @@ const websocket = fileFacade.getIstance();
       });
     }
 
-    // if (codeDiv) codeDiv.textContent = code;
-
-    // const pythonCode = pythonGenerator.workspaceToCode(ws);
-    // if (codeDiv) codeDiv.textContent = pythonCode;
-
-    if (outputDiv) outputDiv.innerHTML = '';
 
     if(code) eval(code);
 
+
+    var testCode = `
+    console.log('Hello, World!');
+    2+3
+    `
     
+
+    
+
+
+    if (runButton) {
+      runButton.addEventListener('click', function () {
+        if (language === 'javascript') {
+          code = javascriptGenerator.workspaceToCode(ws);
+          //result code
+
+          let capturedLog: string | null = null;
+  
+          const originalConsoleLog = console.log;
+          console.log = function(...args) {
+            const message = args.map(arg => 
+              typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            capturedLog = message;
+            originalConsoleLog.apply(console, [message]);
+          };
+
+
+          function evalAndCapture(code: string): string | null {
+            capturedLog = null;
+            eval(code);
+            return capturedLog;
+          }
+    
+          if (outputDiv) outputDiv.textContent = evalAndCapture(code);
+        }
+      });
+    }
     if (compareButton) {
       let result: any = null;
       let analyzer = null;
@@ -142,7 +174,7 @@ const websocket = fileFacade.getIstance();
     websocket.setWorkspace(ws);
     websocket.runWebSocket();
     load(ws);
-    // runCode();
+    runCode();
 
     // Every time the workspace changes state, save the changes to storage.
     ws.addChangeListener((e: Blockly.Events.Abstract) => {
@@ -166,7 +198,7 @@ const websocket = fileFacade.getIstance();
         ws.isDragging()) {
         return;
       }
-      runCode();
+      // runCode();
     });
   };
 // });
