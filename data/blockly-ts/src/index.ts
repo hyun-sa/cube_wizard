@@ -22,6 +22,10 @@ import { saveAs } from 'file-saver';
 import { pythonGenerator } from 'blockly/python';
 import { string } from 'blockly/core/utils';
 
+import { loadPyodide } from 'pyodide';
+
+declare const Sk: any;
+
 // import {WebSocketClient} from './WebSocket';
 // import { WebSocket } from 'ws';
 const WebSocket = require('ws');
@@ -43,6 +47,7 @@ const blocklyDiv = document.getElementById('blocklyDiv');
 const ws = blocklyDiv && Blockly.inject(blocklyDiv, { toolbox });
 
 const websocket = fileFacade.getIstance();
+
 
 
 
@@ -88,20 +93,9 @@ const websocket = fileFacade.getIstance();
     }
 
 
-    if(code) eval(code);
-
-
-    var testCode = `
-    console.log('Hello, World!');
-    2+3
-    `
-    
-
-    
-
-
     if (runButton) {
       runButton.addEventListener('click', function () {
+        // if (outputDiv) outputDiv.textContent = '';
         if (language === 'javascript') {
           code = javascriptGenerator.workspaceToCode(ws);
           //result code
@@ -124,10 +118,41 @@ const websocket = fileFacade.getIstance();
             return capturedLog;
           }
     
-          if (outputDiv) outputDiv.textContent = evalAndCapture(code);
+          if (outputDiv) outputDiv.textContent += evalAndCapture(code) || '';
         }
+        else if (language === 'python') {
+          function outf(text: string) { 
+            if (outputDiv) outputDiv.textContent += text;
+          } 
+          function builtinRead(x: string) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                    throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+          }
+          function runit(code: string) { 
+            Sk.pre = "output";
+            Sk.configure({output:outf, read:builtinRead}); 
+            (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+            var myPromise = Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, code, true);
+            });
+            myPromise.then(function(mod: any) {
+                console.log('success');
+            },
+                function(err: { toString: () => any; }) {
+                console.log(err.toString());
+            });
+          } 
+
+          runit(code);
+
+        }
+        
+
+
       });
     }
+
     if (compareButton) {
       let result: any = null;
       let analyzer = null;
