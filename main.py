@@ -7,9 +7,14 @@ import threading
 import requests
 import http.server
 import socketserver
+import http.client
+import json
+import socket
 
 
 Host_passwd = None
+SERVER_HOST = '10.198.137.118'
+SERVER_PORT = 8000
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -425,9 +430,27 @@ def sending_files(path_to_send):
         
         
 def host_function(port):
+    conn = http.client.HTTPConnection(f"{SERVER_HOST}:{SERVER_PORT}")
+    data = {'ip': f"{socket.gethostbyname(socket.gethostname())}", 'port': f"{port}"}
+    headers = {'Content-Type': 'application/json'}
+    conn.request('POST', '/register', json.dumps(data), headers)
+    response = conn.getresponse()
+    print(f"Host registered with status code: {response.status}")
+    
     with socketserver.TCPServer(("", port), FileReceiveHandler) as httpd:
         print(f"Waiting for file transfer at http://localhost:{port}/file")
         httpd.serve_forever()
+
+
+def get_host_list():
+    conn = http.client.HTTPConnection(f"{SERVER_HOST}:{SERVER_PORT}")
+    conn.request('GET', '/hosts')
+    response = conn.getresponse()
+    if response.status == 200:
+        host_list = json.loads(response.read())
+        print(f"Host list: {host_list}")
+    else:
+        print(f"Error getting host list: {response.status}")
 
 
 class FileReceiveHandler(http.server.SimpleHTTPRequestHandler):
