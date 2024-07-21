@@ -53,7 +53,6 @@
 
     document.getElementById("run").addEventListener("click", function() {
       var code = editor.getValue();
-      alert(code);
       var output = document.getElementById("output");
       output.innerHTML = '';
       
@@ -89,6 +88,8 @@
       // iframeDocument.close();
     });
   </script>
+  <script src="https://skulpt.org/js/skulpt.min.js"></script>
+  <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
 </body>
 
 </html>
