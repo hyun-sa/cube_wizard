@@ -22,7 +22,7 @@ previousStatement, next~ 는 위아래 꼭지 생성 여부 true 면 생성 (위
 
 
 const enqueue = {
-  "type": "enque",
+  "type": "enqueue",
   "message0": "Enque %1 onto %2",
   "args0": [
     {
@@ -138,7 +138,8 @@ const deque_remove_back ={
   "helpUrl": ""
 }
 
-const priorityQueueEnqueue = {
+// ------------------------------------------------------------------------------------------
+const priority_queue_enqueue = {
   "type": "priority_queue_enqueue",
   "message0": "Enqueue %1 with priority %2 to %3",
   "args0": [
@@ -165,7 +166,7 @@ const priorityQueueEnqueue = {
   "helpUrl": ""
 };
 
-const priorityQueueDequeue = {
+const priority_queue_dequeue = {
   "type": "priority_queue_dequeue",
   "message0": "Dequeue from %1",
   "args0": [
@@ -181,7 +182,7 @@ const priorityQueueDequeue = {
   "helpUrl": ""
 };
 
-const linkedListAdd = {
+const linked_list_add = {
   "type": "linked_list_add",
   "message0": "Add %1 to %2",
   "args0": [
@@ -203,7 +204,7 @@ const linkedListAdd = {
   "helpUrl": ""
 };
 
-const linkedListRemoveFirst = {
+const linked_list_remove_first = {
   "type": "linked_list_remove_first",
   "message0": "Remove first from %1",
   "args0": [
@@ -222,5 +223,5 @@ const linkedListRemoveFirst = {
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const stblocks = Blockly.common.createBlockDefinitionsFromJsonArray([enqueue, dequeue, deque_add_back, deque_add_front, deque_remove_back, deque_remove_front,
-priorityQueueDequeue,priorityQueueEnqueue, linkedListAdd,linkedListRemoveFirst]);
+export const qublocks = Blockly.common.createBlockDefinitionsFromJsonArray([enqueue, dequeue, deque_add_back, deque_add_front, deque_remove_back, deque_remove_front,
+priority_queue_dequeue,priority_queue_enqueue, linked_list_add, linked_list_remove_first]);

@@ -772,23 +772,11 @@ export const toolbox = {
       "contents": [
       {
         "kind": "block",
-        "type": "stack_push"
+        "type": "enqueue"
       },
       {
         "kind": "block",
-        "type": "stack_pop"
-      },
-      {
-        "kind": "block",
-        "type": "stack_top"
-      },
-      {
-        "kind": "block",
-        "type": "is_empty"
-      },
-      {
-        "kind": "block",
-        "type": "sort"
+        "type": "dequeue"
       },
       ]
     },
@@ -800,23 +788,19 @@ export const toolbox = {
       "contents": [
       {
         "kind": "block",
-        "type": "stack_push"
+        "type": "deque_add_front"
       },
       {
         "kind": "block",
-        "type": "stack_pop"
+        "type": "deque_add_back"
       },
       {
         "kind": "block",
-        "type": "stack_top"
+        "type": "deque_remove_front"
       },
       {
         "kind": "block",
-        "type": "is_empty"
-      },
-      {
-        "kind": "block",
-        "type": "sort"
+        "type": "deque_remove_back"
       },
       ]
     },
