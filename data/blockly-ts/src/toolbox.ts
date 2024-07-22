@@ -731,9 +731,21 @@ export const toolbox = {
           'type':'Alert',
         },
         {
+          "kind": "block",
+          "type": "sort"
+        },
+        {
           'kind':'block',
           'type':'newline',
-        }
+        },
+        {
+          "kind": "block",
+          "type": "prompt"
+        },
+        {
+          "kind": "block",
+          "type": "input",
+        },
       ]
     },
     //----------------------------------------------
@@ -758,17 +770,13 @@ export const toolbox = {
         "kind": "block",
         "type": "is_empty"
       },
-      {
-        "kind": "block",
-        "type": "sort"
-      },
       ]
     },
     //-----------------------------------------------------
     {
       "kind": "category",
       "name": "Queue",
-      "colour": "700",
+      "colour": "10",
       "contents": [
       {
         "kind": "block",
@@ -784,7 +792,7 @@ export const toolbox = {
     {
       "kind": "category",
       "name": "Deque",
-      "colour": "400",
+      "colour": "260",
       "contents": [
       {
         "kind": "block",
@@ -807,7 +815,7 @@ export const toolbox = {
     {
       "kind": "category",
       "name": "Priority_queue",
-      "colour": "450",
+      "colour": "230",
       "contents": [
       {
         "kind": "block",
@@ -822,7 +830,7 @@ export const toolbox = {
     {
       "kind": "category",
       "name": "Linked_list",
-      "colour": "500",
+      "colour": "160",
       "contents": [
       {
         "kind": "block",

@@ -277,3 +277,19 @@ forBlock['linked_list_remove_first'] = function (block: Blockly.Block, generator
   );
   return [`${functionName}(${list})`, 0];
 };
+
+forBlock['prompt'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const variable = generator.nameDB_?.getName(block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  const message = generator.valueToCode(block, 'MESSAGE', Order.NONE) || "''";
+  
+  const code = `
+  var ${variable} = prompt(${message});
+  if (!isNaN(${variable})) {
+    ${variable} = Number(${variable});
+  } else if (${variable} === 'true' || ${variable} === 'false') {
+    ${variable} = (${variable} === 'true');
+  }
+`;
+  
+  return code;
+}

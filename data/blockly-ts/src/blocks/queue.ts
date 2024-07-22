@@ -38,7 +38,7 @@ const enqueue = {
   ],
   "previousStatement": null,
   "nextStatement": null,
-  "colour": 700,
+  "colour": 10,
   "tooltip": "Adds a value to the end of the queue",
   "helpUrl": ""
 };
@@ -55,7 +55,7 @@ const dequeue = {
     }
   ],
   "output": "Number",
-  "colour": 700,
+  "colour": 10,
   "tooltip": "Removes and returns the value from the front of the queue",
   "helpUrl": ""
 };
@@ -181,6 +181,8 @@ const priority_queue_dequeue = {
   "tooltip": "Dequeue the element with the highest priority",
   "helpUrl": ""
 };
+
+//------------------------------------------------------------------------
 
 const linked_list_add = {
   "type": "linked_list_add",

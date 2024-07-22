@@ -23,7 +23,7 @@ import { saveAs } from 'file-saver';
 import { pythonGenerator } from 'blockly/python';
 import { string } from 'blockly/core/utils';
 
-import { loadPyodide } from 'pyodide';
+// import { loadPyodide } from 'pyodide';
 
 declare const Sk: any;
 
