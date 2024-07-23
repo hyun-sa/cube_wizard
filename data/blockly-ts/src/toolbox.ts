@@ -746,6 +746,14 @@ export const toolbox = {
           "kind": "block",
           "type": "input",
         },
+        {
+          "kind": "block",
+          "type": "c_prompt"
+        },
+        {
+          "kind": "block",
+          "type": "c_input",
+        },
       ]
     },
     //----------------------------------------------

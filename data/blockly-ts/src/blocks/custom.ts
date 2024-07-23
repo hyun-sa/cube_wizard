@@ -122,11 +122,53 @@ const input= {
   "helpUrl": ""
 };
 
+const c_prompt = {
+  "type": "c_prompt",
+  "message0": "User Prompt %1 with in %2",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "VAR",
+      "variable": "item"
+    },
+    {
+      "type": "filed_input",
+      "name": "MESSAGE",
+      "text": "Enter a value:"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 200,
+  "tooltip": "User Prompt",
+  "helpUrl": ""
+};
 
+const c_input= {
+  "type": "c_input",
+  "message0": "User Input %1 with in %2",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "VAR",
+      "variable": "item"
+    },
+    {
+      "type": "filed_input",
+      "name": "MESSAGE",
+      "text": "Enter a value:"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 200,
+  "tooltip": "User Input",
+  "helpUrl": ""
+};
 
 
 
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
-export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([addText, consolePrint, Alert, input, prompt]);
+export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([addText, consolePrint, Alert, input, prompt, c_input, c_prompt]);

@@ -293,3 +293,19 @@ forBlock['prompt'] = function (block: Blockly.Block, generator: Blockly.CodeGene
   
   return code;
 }
+
+forBlock['c_prompt'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const variable = generator.nameDB_?.getName(block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  const message = block.getFieldValue('MESSAGE') ? `"${block.getFieldValue('MESSAGE')}"` : "";
+  
+  const code = `
+  var ${variable} = prompt(${message});
+  if (!isNaN(${variable})) {
+    ${variable} = Number(${variable});
+  } else if (${variable} === 'true' || ${variable} === 'false') {
+    ${variable} = (${variable} === 'true');
+  }
+`;
+  
+  return code;
+}

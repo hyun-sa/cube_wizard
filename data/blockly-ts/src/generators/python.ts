@@ -286,3 +286,18 @@ except ValueError:
   
   return code;
 }
+
+forBlock2['c_input'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
+  const variable = generator.nameDB_?.getName(block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  const message = block.getFieldValue('MESSAGE') ? `"${block.getFieldValue('MESSAGE')}"` : "";
+  
+  const code = `
+${variable} = input(${message})
+try:
+    ${variable} = float(${variable}) if '.' in ${variable} else int(${variable})
+except ValueError:
+    ${variable} = ${variable}.lower() == 'true' if ${variable}.lower() in ['true', 'false'] else ${variable}
+`;
+  
+  return code;
+}
