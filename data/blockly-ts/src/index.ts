@@ -7,7 +7,6 @@
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/custom';
 import { stblocks } from './blocks/stack';
-import { qublocks } from './blocks/queue';
 import { forBlock } from './generators/javascript';
 import { forBlock2 } from './generators/python';
 import { javascriptGenerator } from 'blockly/javascript';
@@ -23,7 +22,7 @@ import { saveAs } from 'file-saver';
 import { pythonGenerator } from 'blockly/python';
 import { string } from 'blockly/core/utils';
 
-// import { loadPyodide } from 'pyodide';
+import { loadPyodide } from 'pyodide';
 
 declare const Sk: any;
 
@@ -37,7 +36,6 @@ const WebSocketClient = require('websocket').client;
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
 Blockly.common.defineBlocks(stblocks);
-Blockly.common.defineBlocks(qublocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
 Object.assign(pythonGenerator.forBlock,forBlock2);
 
@@ -97,10 +95,10 @@ const websocket = fileFacade.getIstance();
 
     if (runButton) {
       runButton.addEventListener('click', function () {
-        // if (outputDiv) outputDiv.textContent = '';
+
         if (language === 'javascript') {
           code = javascriptGenerator.workspaceToCode(ws);
-          //result code
+
 
           let capturedLog: string | null = null;
   
@@ -109,13 +107,13 @@ const websocket = fileFacade.getIstance();
             const message = args.map(arg => 
               typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
             ).join(' ');
-            capturedLog = message;
+            capturedLog += message + '\n';
             originalConsoleLog.apply(console, [message]);
           };
 
 
           function evalAndCapture(code: string): string | null {
-            capturedLog = null;
+            capturedLog = "";
             eval(code);
             return capturedLog;
           }
@@ -124,7 +122,11 @@ const websocket = fileFacade.getIstance();
         }
         else if (language === 'python') {
           function outf(text: string) { 
-            if (outputDiv) outputDiv.textContent += text;
+            if (outputDiv) {
+              outputDiv.style.whiteSpace = 'pre-line';
+              outputDiv.textContent += text;
+
+            }
           } 
           function builtinRead(x: string) {
             if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)

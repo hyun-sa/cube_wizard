@@ -38,6 +38,11 @@ pre, code {
 
 #output {
     height: 50%;
+    background-color: #000;
+    color: #fff;
+    border : 5px solid #fff;
+    border-radius: 5px;
+    padding: 16px;
 }
 
 /* #output iframe {
