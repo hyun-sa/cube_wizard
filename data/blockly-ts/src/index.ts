@@ -7,6 +7,7 @@
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/custom';
 import { stblocks } from './blocks/stack';
+import { qublocks } from './blocks/queue';
 import { forBlock } from './generators/javascript';
 import { forBlock2 } from './generators/python';
 import { javascriptGenerator } from 'blockly/javascript';
@@ -22,7 +23,7 @@ import { saveAs } from 'file-saver';
 import { pythonGenerator } from 'blockly/python';
 import { string } from 'blockly/core/utils';
 
-import { loadPyodide } from 'pyodide';
+// import { loadPyodide } from 'pyodide';
 
 declare const Sk: any;
 
@@ -36,6 +37,7 @@ const WebSocketClient = require('websocket').client;
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
 Blockly.common.defineBlocks(stblocks);
+Blockly.common.defineBlocks(qublocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
 Object.assign(pythonGenerator.forBlock,forBlock2);
 

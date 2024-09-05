@@ -54,7 +54,7 @@ export class HalsteadComplexityAnalyzer {
           totalOperands++;
         }
       }
-   
+
       return {
         n1: operators.size,
         n2: operands.size,
