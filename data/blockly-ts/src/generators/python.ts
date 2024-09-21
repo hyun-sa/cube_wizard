@@ -196,7 +196,7 @@ forBlock2['deque_add_back'] = function (block: Blockly.Block, generator: Blockly
 };
 
 forBlock2['deque_remove_front'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
-  const deque = generator.valueToCode(block, 'DEQUE', Order.NONE) || "[]";
+  const deque = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
   const functionName = generator.provideFunction_(
     'deque_remove_front',
     `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
@@ -206,7 +206,7 @@ forBlock2['deque_remove_front'] = function (block: Blockly.Block, generator: Blo
 };
 
 forBlock2['deque_remove_back'] = function (block: Blockly.Block, generator: Blockly.CodeGenerator) {
-  const deque = generator.valueToCode(block, 'DEQUE', Order.NONE) || "[]";
+  const deque = generator.valueToCode(block, 'LIST', Order.NONE) || "[]";
   const functionName = generator.provideFunction_(
     'deque_remove_back',
     `def ${generator.FUNCTION_NAME_PLACEHOLDER_}(list):
