@@ -54,6 +54,8 @@ const dequeue = {
       "check": "Array"
     }
   ],
+  "previousStatement": null,
+  "nextStatement": null,
   "output": "Number",
   "colour": 10,
   "tooltip": "Removes and returns the value from the front of the queue",
@@ -116,6 +118,8 @@ const deque_remove_front ={
       "check": "Array"
     }
   ],
+  "previousStatement": null,
+  "nextStatement": null,
   "output": "Number",
   "colour": 260,
   "tooltip": "Removes and returns the value from the front of the deque",
@@ -132,6 +136,8 @@ const deque_remove_back ={
       "check": "Array"
     }
   ],
+  "previousStatement": null,
+  "nextStatement": null,
   "output": "Number",
   "colour": 260,
   "tooltip": "Removes and returns the value from the back of the deque",
@@ -176,6 +182,8 @@ const priority_queue_dequeue = {
       "check": "Array"
     }
   ],
+  "previousStatement": null,
+  "nextStatement": null,
   "output": "String",
   "colour": 230,
   "tooltip": "Dequeue the element with the highest priority",
@@ -216,6 +224,8 @@ const linked_list_remove_first = {
       "check": "Array"
     }
   ],
+  "previousStatement": null,
+  "nextStatement": null,
   "output": "String",
   "colour": 160,
   "tooltip": "Remove the first element from the linked list",
