@@ -23,8 +23,12 @@
       <div id="codeEditor">
         <textarea id="editor"></textarea>
       </div>
-      
-      <button id="run">Run Code</button>
+      <div class="run-button">
+        <button id="run-block">Run Block</button>
+        <button id="run-code">Run Code</button>
+      </div>
+
+
       <!-- <iframe id="output"></iframe> -->
        <pre id="complexity"></pre>
       <div class="compare">
@@ -51,7 +55,7 @@
       theme: "dracula"
     });
 
-    document.getElementById("run").addEventListener("click", function() {
+    document.getElementById("run-code").addEventListener("click", function() {
       var code = editor.getValue();
       var output = document.getElementById("output");
       output.innerHTML = '';
@@ -65,7 +69,7 @@
           if (typeof message === 'object') {
             output.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br>';
           } else {
-            output.innerHTML += message + '<br>';
+            output.innerHTML = message + '<br>';
           }
         };
 

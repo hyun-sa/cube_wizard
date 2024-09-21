@@ -60,20 +60,17 @@ const websocket = fileFacade.getIstance();
   // generated code from the workspace, and evals the code.
   // In a real application, you probably shouldn't use `eval`.
   const runCode = () => {
-    // const jsCode = javascriptGenerator.workspaceToCode(ws);
-    // const pyCode = pythonGenerator.workspaceToCode(ws);
-
-
 
     const jsElement = document.getElementById('javascript');
     const pyElement = document.getElementById('python');
 
     const compareButton = document.getElementById('compare'); 
     const complexityOutputDiv = document.getElementById('complexity');
-    const runButton = document.getElementById('run');
-    // var code = null;
+    const runBlockButton = document.getElementById('run-block');
+    const runCodeButton = document.getElementById('run-code');
 
     var language = 'javascript';
+
 
 
 
@@ -95,12 +92,10 @@ const websocket = fileFacade.getIstance();
     }
 
 
-    if (runButton) {
-      runButton.addEventListener('click', function () {
-
+    if (runBlockButton) {
+      runBlockButton.addEventListener('click', function () {
         if (language === 'javascript') {
           code = javascriptGenerator.workspaceToCode(ws);
-
 
           let capturedLog: string | null = null;
   
@@ -109,7 +104,7 @@ const websocket = fileFacade.getIstance();
             const message = args.map(arg => 
               typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
             ).join(' ');
-            capturedLog += message + '\n';
+            capturedLog = message + '\n';
             originalConsoleLog.apply(console, [message]);
           };
 
@@ -120,13 +115,13 @@ const websocket = fileFacade.getIstance();
             return capturedLog;
           }
     
-          if (outputDiv) outputDiv.textContent += evalAndCapture(code) || '';
+          if (outputDiv) outputDiv.textContent = evalAndCapture(code) || '';
         }
         else if (language === 'python') {
           function outf(text: string) { 
             if (outputDiv) {
               outputDiv.style.whiteSpace = 'pre-line';
-              outputDiv.textContent += text;
+              outputDiv.textContent = text;
 
             }
           } 
@@ -155,11 +150,16 @@ const websocket = fileFacade.getIstance();
         }
         
 
-
+      });
+    }
+    if (runCodeButton) {
+      runCodeButton.addEventListener('click', function () {
+        // runCode();
       });
     }
 
     if (compareButton) {
+
       let result: any = null;
       let analyzer = null;
       compareButton.addEventListener('click', function () {
