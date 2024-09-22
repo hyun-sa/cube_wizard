@@ -21,7 +21,6 @@
     <div class="editor-container">
       <!-- <textarea id="codeEditor" placeholder="여기에 코드 작성..."></textarea> -->
       <div id="codeEditor">
-        <textarea id="editor"></textarea>
       </div>
       <div class="run-button">
         <button id="run-block">Run Block</button>
@@ -48,49 +47,68 @@
 
   </div>
   <script>
-    // testing for running code on frontend
-    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-      lineNumbers: true,
-      mode: "javascript",
-      theme: "dracula"
-    });
+    // // testing for running code on frontend
+    // var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    //   lineNumbers: true,
+    //   mode: "javascript",
+    //   theme: "dracula"
+    // });
 
-    document.getElementById("run-code").addEventListener("click", function() {
-      var code = editor.getValue();
-      var output = document.getElementById("output");
-      output.innerHTML = '';
+    // document.getElementById("run-code").addEventListener("click", function() {
+    //   var code = editor.getValue();
+    //   var output = document.getElementById("output");
+    //   output.innerHTML = '';
       
 
-      (function() {
-        // var oldLog = console.log;
+    //   (function() {
+    //     // var oldLog = console.log;
         
-        var console = {};
-        console.log = function(message) {
-          if (typeof message === 'object') {
-            output.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br>';
-          } else {
-            output.innerHTML = message + '<br>';
-          }
-        };
+    //     var console = {};
+    //     console.log = function(message) {
+    //       if (typeof message === 'object') {
+    //         output.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br>';
+    //       } else {
+    //         output.innerHTML = message + '<br>';
+    //       }
+    //     };
 
-        try {
-          var result = eval(code);
-          if (result !== undefined) {
-            output.innerHTML += '<br>Result: ' + result;
-          }
-        } catch (e) {
-          output.innerHTML += '<br>Error: ' + e.message;
-        }
 
-        // console.log = oldLog;  // Restore console.log
-      })();
+        
+    //     // if (document.getElementById("python").checked) {
+    //     //   try {
+    //     //     var result = Sk.misceval.asyncToPromise(function() {
+    //     //       return Sk.importMainWithBody("<stdin>", false, body =>
+    //     //         Sk.misceval.asyncToPromise(() => Sk.evalCode(body, true))
+    //     //       );
+    //     //     }, code);
+    //     //     result.then(function(result) {
+    //     //       output.innerHTML += '<br>Result: ' + result;
+    //     //     }).catch(function(e) {
+    //     //       output.innerHTML += '<br>Error: ' + e.message;
+    //     //     });
+    //     //   } catch (e) {
+    //     //     output.innerHTML += '<br>Error: ' + e.message;
+    //     //   }
+    //     // }
+
+    //     try {
+    //       var result = eval(code);
+    //       if (result !== undefined) {
+    //         output.innerHTML += '<br>Result: ' + result;
+    //       }
+    //     } catch (e) {
+    //       output.innerHTML += '<br>Error: ' + e.message;
+    //     }
+
+    //     // console.log = oldLog;  // Restore console.log
+    //   })();
       
 
-      // var iframeDocument = output.contentDocument || output.contentWindow.document;
-      // iframeDocument.open();
-      // iframeDocument.write('<!DOCTYPE html><html><head><title>Output</title></head><body><script>' + code + '<\/script></body></html>');
-      // iframeDocument.close();
-    });
+    //   // var iframeDocument = output.contentDocument || output.contentWindow.document;
+    //   // iframeDocument.open();
+    //   // iframeDocument.write('<!DOCTYPE html><html><head><title>Output</title></head><body><script>' + code + '<\/script></body></html>');
+    //   // iframeDocument.close();
+    // });
   </script>
   <script src="https://skulpt.org/js/skulpt.min.js"></script>
   <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>

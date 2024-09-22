@@ -24,8 +24,13 @@ import { pythonGenerator } from 'blockly/python';
 import { string } from 'blockly/core/utils';
 
 // import { loadPyodide } from 'pyodide';
+import {EditorView, basicSetup} from "codemirror"
+import {javascript} from "@codemirror/lang-javascript"
+
 
 declare const Sk: any;
+
+
 
 // import {WebSocketClient} from './WebSocket';
 // import { WebSocket } from 'ws';
@@ -48,7 +53,9 @@ const outputDiv = document.getElementById('output');
 const blocklyDiv = document.getElementById('blocklyDiv');
 const ws = blocklyDiv && Blockly.inject(blocklyDiv, { toolbox });
 
+
 const websocket = fileFacade.getIstance();
+
 
 
 
@@ -69,9 +76,78 @@ const websocket = fileFacade.getIstance();
     const runBlockButton = document.getElementById('run-block');
     const runCodeButton = document.getElementById('run-code');
 
-    var language = 'javascript';
+    let language = 'javascript';
+
+    const editorTheme = EditorView.theme({
+      "&": {
+        color: "white",
+        backgroundColor: "#282c34"
+      },
+      ".cm-content": {
+        caretColor: "#61dafb"
+      }
+    }, { dark: true });
 
 
+    let editor = new EditorView({
+      extensions: [basicSetup, javascript(), editorTheme],
+      parent: document.getElementById("codeEditor") as HTMLElement
+    });
+
+
+
+      // (function() {
+      //   // var oldLog = console.log;
+        
+      //   var console = {};
+      //   console.log = function(message) {
+      //     if (typeof message === 'object') {
+      //       output.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br>';
+      //     } else {
+      //       output.innerHTML = message + '<br>';
+      //     }
+      //   };
+
+
+        
+    //     // if (document.getElementById("python").checked) {
+    //     //   try {
+    //     //     var result = Sk.misceval.asyncToPromise(function() {
+    //     //       return Sk.importMainWithBody("<stdin>", false, body =>
+    //     //         Sk.misceval.asyncToPromise(() => Sk.evalCode(body, true))
+    //     //       );
+    //     //     }, code);
+    //     //     result.then(function(result) {
+    //     //       output.innerHTML += '<br>Result: ' + result;
+    //     //     }).catch(function(e) {
+    //     //       output.innerHTML += '<br>Error: ' + e.message;
+    //     //     });
+    //     //   } catch (e) {
+    //     //     output.innerHTML += '<br>Error: ' + e.message;
+    //     //   }
+    //     // }
+
+    //     try {
+    //       var result = eval(code);
+    //       if (result !== undefined) {
+    //         output.innerHTML += '<br>Result: ' + result;
+    //       }
+    //     } catch (e) {
+    //       output.innerHTML += '<br>Error: ' + e.message;
+    //     }
+
+    //     // console.log = oldLog;  // Restore console.log
+    //   })();
+      
+
+    //   // var iframeDocument = output.contentDocument || output.contentWindow.document;
+    //   // iframeDocument.open();
+    //   // iframeDocument.write('<!DOCTYPE html><html><head><title>Output</title></head><body><script>' + code + '<\/script></body></html>');
+    //   // iframeDocument.close();
+    // });
+
+
+    // sjfklj;eijsilfj====================
 
 
     var code: string = '';
@@ -92,71 +168,204 @@ const websocket = fileFacade.getIstance();
     }
 
 
-    if (runBlockButton) {
-      runBlockButton.addEventListener('click', function () {
-        if (language === 'javascript') {
-          code = javascriptGenerator.workspaceToCode(ws);
+    // if (runBlockButton) {
+    //   runBlockButton.addEventListener('click', function () {
+    //     if (language === 'javascript') {
+    //       code = javascriptGenerator.workspaceToCode(ws);
+    //
+    //       let capturedLog: string | null = null;
+    //
+    //       const originalConsoleLog = console.log;
+    //       console.log = function(...args) {
+    //         const message = args.map(arg =>
+    //           typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+    //         ).join(' ');
+    //         capturedLog = message + '\n';
+    //         originalConsoleLog.apply(console, [message]);
+    //       };
+    //
+    //
+    //       function evalAndCapture(code: string): string | null {
+    //         capturedLog = "";
+    //         eval(code);
+    //         return capturedLog;
+    //       }
+    //
+    //       if (outputDiv) outputDiv.textContent = evalAndCapture(code) || '';
+    //     }
+    //     else if (language === 'python') {
+    //       function outf(text: string) {
+    //         if (outputDiv) {
+    //           outputDiv.style.whiteSpace = 'pre-line';
+    //           outputDiv.textContent += text;
+    //           console.log("output: "+ text);
+    //         }
+    //       }
+    //       function builtinRead(x: string) {
+    //         if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+    //                 throw "File not found: '" + x + "'";
+    //         return Sk.builtinFiles["files"][x];
+    //       }
+    //       function runit(code: string) {
+    //         Sk.pre = "output";
+    //         Sk.configure({output:outf, read:builtinRead});
+    //         (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+    //         var myPromise = Sk.misceval.asyncToPromise(function() {
+    //             return Sk.importMainWithBody("<stdin>", false, code, true);
+    //         });
+    //         myPromise.then(function(mod: any) {
+    //             console.log('success');
+    //         },
+    //             function(err: { toString: () => any; }) {
+    //             console.log(err.toString());
+    //         });
+    //       }
+    //
+    //       runit(code);
+    //
+    //     }
+    //
+    //
+    //   });
+    // }
+    // if (runCodeButton) {
+    //   runCodeButton.addEventListener('click', function () {
+    //     let code = editor.state.doc.toString();
+    //   });
+    // }
 
-          let capturedLog: string | null = null;
-  
-          const originalConsoleLog = console.log;
-          console.log = function(...args) {
-            const message = args.map(arg => 
-              typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-            ).join(' ');
-            capturedLog = message + '\n';
-            originalConsoleLog.apply(console, [message]);
-          };
-
-
-          function evalAndCapture(code: string): string | null {
-            capturedLog = "";
-            eval(code);
-            return capturedLog;
-          }
+    // runCodeButton.addEventListener('click', function () {
+    //   var code = editor.state.doc.toString();
+    //   console.log(code + "code");
+    //   if (language == 'javascript') {
+    //     output.innerHTML = '';
+    //     try {
+    //       var result = eval(code);
+    //       if (result !== undefined) {
+    //         output.innerHTML += '<br>Result: ' + result;
+    //       }
+    //     } catch (e:unknown) {
+    //       if (e instanceof Error) {
+    //         output.innerHTML += '<br>Error: ' + e.message;
+    //       } else {
+    //         output.innerHTML += '<br>Unknown error occurred';
+    //       }
+    //     }
+    //   }
+    //   else if (language == 'python') {
+    //     function outf(text: string) { 
+    //       if (outputDiv) {
+    //         outputDiv.style.whiteSpace = 'pre-line';
+    //         outputDiv.textContent = text;
     
-          if (outputDiv) outputDiv.textContent = evalAndCapture(code) || '';
-        }
-        else if (language === 'python') {
-          function outf(text: string) { 
-            if (outputDiv) {
-              outputDiv.style.whiteSpace = 'pre-line';
-              outputDiv.textContent = text;
+    //       }
+    //     } 
+    //     function builtinRead(x: string) {
+    //       if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+    //               throw "File not found: '" + x + "'";
+    //       return Sk.builtinFiles["files"][x];
+    //     }
+    //     function runit(code: string) { 
+    //       Sk.pre = "output";
+    //       Sk.configure({output:outf, read:builtinRead}); 
+    //       (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+    //       var myPromise = Sk.misceval.asyncToPromise(function() {
+    //           return Sk.importMainWithBody("<stdin>", false, code, true);
+    //       });
+    //       myPromise.then(function(mod: any) {
+    //           console.log('success');
+    //       },
+    //           function(err: { toString: () => any; }) {
+    //           console.log(err.toString());
+    //       });
+    //     } 
+    
+    //     runit(code);
+    //   }
 
-            }
-          } 
-          function builtinRead(x: string) {
-            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-                    throw "File not found: '" + x + "'";
-            return Sk.builtinFiles["files"][x];
-          }
-          function runit(code: string) { 
-            Sk.pre = "output";
-            Sk.configure({output:outf, read:builtinRead}); 
-            (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-            var myPromise = Sk.misceval.asyncToPromise(function() {
-                return Sk.importMainWithBody("<stdin>", false, code, true);
-            });
-            myPromise.then(function(mod: any) {
-                console.log('success');
-            },
-                function(err: { toString: () => any; }) {
-                console.log(err.toString());
-            });
-          } 
 
-          runit(code);
+    const runningCode = (code:string) => {
+      if (language === 'javascript') {
 
-        }
         
 
+
+        let capturedLog: string | null = null;
+
+        const originalConsoleLog = console.log;
+        console.log = function(...args) {
+          const message = args.map(arg =>
+            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+          ).join(' ');
+          capturedLog = message + '\n';
+          originalConsoleLog.apply(console, [message]);
+        };
+
+
+        function evalAndCapture(code: string): string | null {
+          capturedLog = "";
+          eval(code);
+          return capturedLog;
+        }
+  
+        if (outputDiv) outputDiv.textContent = evalAndCapture(code) || '';
+      }
+      else if (language === 'python') {
+        if(outputDiv) outputDiv.textContent = '';
+        function outf(text: string) {
+          if (outputDiv) {
+            outputDiv.style.whiteSpace = 'pre-line';
+            outputDiv.textContent += text;
+          }
+        }
+        function builtinRead(x: string) {
+          if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                  throw "File not found: '" + x + "'";
+          return Sk.builtinFiles["files"][x];
+        }
+        function runit(code: string) {
+          Sk.pre = "output";
+          Sk.configure({output:outf, read:builtinRead});
+          (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+          var myPromise = Sk.misceval.asyncToPromise(function() {
+              return Sk.importMainWithBody("<stdin>", false, code, true);
+          });
+          myPromise.then(function(mod: any) {
+              console.log('success');
+          },
+              function(err: { toString: () => any; }) {
+              console.log(err.toString());
+          });
+        }
+
+        runit(code);
+
+      }
+    }
+
+    if (runBlockButton) {
+      runBlockButton.addEventListener('click', function () {
+        console.log("block_code" + code);
+        if (language === "javascript") {
+          let block_code = javascriptGenerator.workspaceToCode(ws);
+          runningCode(block_code);
+        }
+        else if (language === "python") {
+          let block_code = pythonGenerator.workspaceToCode(ws);
+          runningCode(block_code);
+        }
       });
     }
     if (runCodeButton) {
       runCodeButton.addEventListener('click', function () {
-        // runCode();
+        
+        var editorCode = editor.state.doc.toString();
+        console.log("code_code" + editorCode);
+        runningCode(editorCode);
+
       });
     }
+
 
     if (compareButton) {
 
