@@ -10,6 +10,9 @@ import socketserver
 import http.client
 import json
 import socket
+import tkinter as tk
+from tkinter import ttk
+from PIL import Image, ImageTk
 
 
 Host_passwd = None
@@ -68,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
         connected_student_action.triggered.connect(self.student_connected)
         student_menu.addAction(connected_student_action)
 
-        program_run_action = QtWidgets.QAction("&프로그램 실행", self)
+        program_run_action = QtWidgets.QAction("&도움말", self)
         navtb.addAction(program_run_action)
         program_run_action.triggered.connect(self.program_run)
         
@@ -144,7 +147,8 @@ class MainWindow(QtWidgets.QMainWindow):
         print("연결된 학습자 확인")
 
     def program_run(self):
-        print("프로그램 실행")
+        help_thread = threading.Thread(target=run_tkinter_slider)
+        help_thread.start()
         
     def closeEvent(self, event: QEvent) -> None:
         reply = QMessageBox.question(self, '종료', '저장되지 않은 내용은 삭제됩니다. 정말로 종료하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -499,11 +503,59 @@ class FileReceiveHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(b"Password not accepted")
 
 
+class ImageSlider:
+    def __init__(self, root, images):
+        self.root = root
+        self.images = images
+        self.index = 0
+
+        self.label = ttk.Label(root)
+        self.label.pack()
+
+        self.update_image()
+
+        self.btn_next = ttk.Button(root, text="다음", command=self.next_image)
+        self.btn_next.pack(side=tk.RIGHT)
+
+        self.btn_prev = ttk.Button(root, text="이전", command=self.prev_image)
+        self.btn_prev.pack(side=tk.LEFT)
+
+    def update_image(self):
+        img = Image.open(self.images[self.index])
+        img = img.resize((1024, 768), Image.LANCZOS)
+        self.photo = ImageTk.PhotoImage(img)
+        self.label.config(image=self.photo)
+        self.label.image = self.photo
+
+    def next_image(self):
+        self.index = (self.index + 1) % len(self.images)
+        self.update_image()
+
+    def prev_image(self):
+        self.index = (self.index - 1) % len(self.images)
+        self.update_image()
+
+
+def run_tkinter_slider():
+    root = tk.Tk()
+    root.title("도움말")
+
+    image_files = ['data/imageslider/0.png', 'data/imageslider/1.png', 
+                   'data/imageslider/2.png', 'data/imageslider/3.png']
+    slider = ImageSlider(root, image_files)
+
+    root.mainloop()
+
+
 def openWebsocket():
     fileadapter = FileAdaptor.get_instance()
     fileadapter.serverOn()
 
 if __name__ == "__main__":
+    
+    slider_thread = threading.Thread(target=run_tkinter_slider)
+    slider_thread.start()
+    
     webSocketThread = threading.Thread(target=openWebsocket)
     webSocketThread.start()
 
