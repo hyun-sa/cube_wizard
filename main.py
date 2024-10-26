@@ -1,24 +1,45 @@
+# PyQt5 관련 모듈
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QListWidget, QLabel, QMenu, QCheckBox, QDialogButtonBox
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QMessageBox, 
+                             QMainWindow, QDialog, QVBoxLayout, QHBoxLayout, 
+                             QLineEdit, QListWidget, QLabel, QMenu, QCheckBox, 
+                             QDialogButtonBox)
 from PyQt5.QtCore import pyqtSlot, QEvent, Qt
-import multiprocessing, time, os ,shutil, requests, sys
-from WebSocket import FileAdaptor
-import threading
+
+# 기타 모듈
+import multiprocessing
+import time
+import os
+import shutil
 import requests
+import sys
+import threading
+import json
+import socket
+import asyncio
+import websockets
+import psutil
+
+# HTTP 서버 관련 모듈
 import http.server
 import socketserver
 import http.client
-import json
-import socket
+
+# Tkinter 관련 모듈
 import tkinter as tk
 from tkinter import ttk
+
+# 이미지 처리 라이브러리
 from PIL import Image, ImageTk
+
 
 
 Host_passwd = None
 SERVER_HOST = '10.198.137.118'
 SERVER_PORT = 8000
 
+host_on = False
+client_addr = None
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -66,10 +87,6 @@ class MainWindow(QtWidgets.QMainWindow):
         all_student_action = QtWidgets.QAction("&전체 학습자 확인", self)
         all_student_action.triggered.connect(self.student_all)
         student_menu.addAction(all_student_action)
-
-        connected_student_action = QtWidgets.QAction("&연결된 학습자 확인", self)
-        connected_student_action.triggered.connect(self.student_connected)
-        student_menu.addAction(connected_student_action)
 
         program_run_action = QtWidgets.QAction("&도움말", self)
         navtb.addAction(program_run_action)
@@ -137,14 +154,50 @@ class MainWindow(QtWidgets.QMainWindow):
             network_process.start()
 
     def network_check(self):
-        print("네트워크 확인")
+        msg = QMessageBox()
+        msg.setWindowTitle("연결 확인")
+        if client_addr:
+            msg.setText(f"IP는 {client_addr}입니다.")
+        else:
+            msg.setText(f"연결되지 않았습니다.")
+        msg.setIcon(QMessageBox.Information)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
     def student_all(self):
-        self.viewer=StudentView()
-        self.viewer.exec_()
+        if host_on:
+            # 데이터 디렉토리 경로
+            data_directory = './data'  # 또는 절대 경로를 사용할 수 있습니다.
 
-    def student_connected(self):
-        print("연결된 학습자 확인")
+            # .cw 파일 목록 가져오기
+            cw_files = [f for f in os.listdir(data_directory) if f.endswith('.cw')]
+
+            # 새로운 다이얼로그 생성
+            dialog = QDialog(self)
+            dialog.setWindowTitle("연결된 학습자 파일 목록")
+
+            layout = QVBoxLayout()
+            dialog.setLayout(layout)
+
+            # 파일 목록을 리스트 위젯에 추가
+            list_widget = QListWidget()
+            list_widget.addItems(cw_files)  # .cw 파일 목록 추가
+            layout.addWidget(list_widget)
+
+            # 확인 버튼 추가
+            ok_button = QPushButton("확인", dialog)
+            ok_button.clicked.connect(dialog.accept)  # 버튼 클릭 시 다이얼로그 종료
+            layout.addWidget(ok_button)
+
+            # 다이얼로그 표시
+            dialog.exec_()
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("연결 확인")
+            msg.setText(f"호스트가 활성화되지 않았습니다.")
+            msg.setIcon(QMessageBox.Information)
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
 
     def program_run(self):
         help_thread = threading.Thread(target=run_tkinter_slider)
@@ -153,6 +206,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event: QEvent) -> None:
         reply = QMessageBox.question(self, '종료', '저장되지 않은 내용은 삭제됩니다. 정말로 종료하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
+            current_process = psutil.Process(os.getpid())
+        
+        # 자식 프로세스 종료
+            for child in current_process.children(recursive=True):
+                child.terminate()  # 자식 프로세스 종료
+                child.wait()  # 자식 프로세스가 종료될 때까지 대기
+            file_adaptor = FileAdaptor.get_instance()  # FileAdaptor 인스턴스 가져오기
+            file_adaptor.stop_server()  # 서버 종료
             event.accept()
         else:
             event.ignore()
@@ -455,6 +516,7 @@ def sending_files(path_to_send):
         
         
 def host_function(port):
+    host_on = True
     conn = http.client.HTTPConnection(f"{SERVER_HOST}:{SERVER_PORT}")
     data = {'ip': f"{socket.gethostbyname(socket.gethostname())}", 'port': f"{port}"}
     headers = {'Content-Type': 'application/json'}
@@ -534,6 +596,100 @@ class ImageSlider:
     def prev_image(self):
         self.index = (self.index - 1) % len(self.images)
         self.update_image()
+
+
+class FileAdaptor:
+    _instance = None
+    data = None
+    load = None
+    server = None
+    running = True
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+
+        return cls._instance
+
+    def __init__(self):
+        self.data = None
+        self.load = None
+
+    def serverOn(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        self.server = websockets.serve(self.WebSocketServer, "localhost", 9998, ping_interval=None)
+
+        # 비동기로 서버를 대기
+        asyncio.get_event_loop().run_until_complete(self.server)
+        asyncio.get_event_loop().run_forever()
+
+    def getdata(self):
+        print(self.data)
+        return self.data
+
+    def save_as_file(self, file, filename):
+        app_data_path = os.getenv('LOCALAPPDATA')
+        dir_path = os.path.join(app_data_path, 'cubewizard', 'temp')
+        file_path = os.path.join(dir_path, f"{filename}")
+
+        try:
+            if not os.path.exists(file_path):
+                os.makedirs(dir_path, mode=0o777, exist_ok=True)
+            with open(file_path, 'w') as f:
+                f.write(file)
+                print(f'File saved to {file_path}')
+
+        except OSError as e:
+            print(f'Error Caused by: {e.strerror}')
+
+    def loaddata(self, filename='test'):
+        app_data_path = os.getenv('LOCALAPPDATA')
+        dir_path = os.path.join(app_data_path, 'cubewizard', 'temp')
+        file_path = os.path.join(dir_path, f'{filename}')
+        print(filename)
+        try:
+            with open(file_path, 'r') as f:
+                file = f.read()
+                print(f'File loaded {file}')
+                self.load = file
+
+        except OSError as e:
+            print(file_path)
+            print(f'Error Caused by: {e.strerror}')
+            
+    def stop_server(self):
+        self.running = False
+        if self.server:
+            self.server.ws_server.close()  # WebSocket 서버 종료
+            print("WebSocket 서버가 종료되었습니다.")
+    # def loaddata(self, file):
+    #     self.load = self.load_file(file, )
+
+    async def WebSocketServer(self, websocket, path):
+        while self.running:  # 서버가 실행 중일 때만 반복
+            try:
+                data = await websocket.recv()
+                print("receive : " + data)
+                if data != 'undefined':
+                    self.data = data
+                    print(self.data)
+            except websockets.exceptions.ConnectionClosedError as e:
+                print(f"Connection closed unexpectedly: {e}")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+                break
+
+            # 클라인언트로 echo를 붙여서 재전송
+            # await websocket.send("echo : " + data)
+
+            # 클라이언트로 데이터 전송
+            if self.load is not None:
+                await websocket.send(self.load)
+                print("send" + self.load)
+                self.load = None
+
 
 
 def run_tkinter_slider():
